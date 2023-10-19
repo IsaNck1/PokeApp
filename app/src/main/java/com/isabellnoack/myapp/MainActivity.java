@@ -22,6 +22,8 @@ import android.view.MenuItem;
 
 import me.sargunvohra.lib.pokekotlin.client.PokeApi;
 import me.sargunvohra.lib.pokekotlin.client.PokeApiClient;
+import me.sargunvohra.lib.pokekotlin.model.Ability;
+import me.sargunvohra.lib.pokekotlin.model.ApiResource;
 import me.sargunvohra.lib.pokekotlin.model.PokemonSpecies;
 
 public class MainActivity extends AppCompatActivity {
@@ -32,15 +34,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        new Thread(() -> {
-            PokeApi pokeApi = new PokeApiClient();
-            PokemonSpecies bulbasaur = pokeApi.getPokemonSpecies(1);
-            System.out.println(bulbasaur);
-            runOnUiThread(() -> {
-                // Hier UI verändern: show text on UI/button
-            });
-        }).start();
 
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());

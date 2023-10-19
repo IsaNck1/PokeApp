@@ -11,6 +11,11 @@ import androidx.navigation.fragment.NavHostFragment;
 
 import com.isabellnoack.myapp.databinding.FragmentFirstBinding;
 
+import me.sargunvohra.lib.pokekotlin.client.PokeApi;
+import me.sargunvohra.lib.pokekotlin.client.PokeApiClient;
+import me.sargunvohra.lib.pokekotlin.model.Ability;
+import me.sargunvohra.lib.pokekotlin.model.PokemonSpecies;
+
 public class FirstFragment extends Fragment {
 
     private FragmentFirstBinding binding;
@@ -36,6 +41,19 @@ public class FirstFragment extends Fragment {
                         .navigate(R.id.action_FirstFragment_to_SecondFragment);
             }
         });
+
+
+        new Thread(() -> {
+            PokeApi pokeApi = new PokeApiClient(); //Instanz einer Klasse erstellen
+            PokemonSpecies bulbasaur = pokeApi.getPokemonSpecies(1); //Funktion der neuen Instanz pokeAPI aufrufen
+            Ability a = pokeApi.getAbility(1);
+            System.out.println(a);
+            getActivity().runOnUiThread(() -> {
+                // Hier UI verändern: show text on UI/button
+                binding.textviewFirst.setText(bulbasaur.toString());
+            });
+        }).start();
+
     }
 
     @Override

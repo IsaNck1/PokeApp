@@ -20,6 +20,10 @@ import com.isabellnoack.myapp.databinding.ActivityMainBinding;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import me.sargunvohra.lib.pokekotlin.client.PokeApi;
+import me.sargunvohra.lib.pokekotlin.client.PokeApiClient;
+import me.sargunvohra.lib.pokekotlin.model.PokemonSpecies;
+
 public class MainActivity extends AppCompatActivity {
 
     private AppBarConfiguration appBarConfiguration;
@@ -29,7 +33,14 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-
+        new Thread(() -> {
+            PokeApi pokeApi = new PokeApiClient();
+            PokemonSpecies bulbasaur = pokeApi.getPokemonSpecies(1);
+            System.out.println(bulbasaur);
+            runOnUiThread(() -> {
+                // Hier UI verändern: show text on UI/button
+            });
+        }).start();
 
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());

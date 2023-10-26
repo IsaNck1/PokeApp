@@ -9,12 +9,11 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 
+import com.isabellnoack.myapp.api.PokeAPI;
+import com.isabellnoack.myapp.api.Pokemon;
 import com.isabellnoack.myapp.databinding.FragmentFirstBinding;
 
-import me.sargunvohra.lib.pokekotlin.client.PokeApi;
-import me.sargunvohra.lib.pokekotlin.client.PokeApiClient;
-import me.sargunvohra.lib.pokekotlin.model.Ability;
-import me.sargunvohra.lib.pokekotlin.model.PokemonSpecies;
+import java.io.IOException;
 
 public class FirstFragment extends Fragment {
 
@@ -42,16 +41,20 @@ public class FirstFragment extends Fragment {
             }
         });
 
-        //Test Anzeige Bulbasaur mit PokeKotlin
+        //Neuer Thread da Hauptthread nicht blockiert werden darf
         new Thread(() -> {
-            PokeApi pokeApi = new PokeApiClient(); //Instanz einer Klasse erstellen
-            PokemonSpecies bulbasaur = pokeApi.getPokemonSpecies(1); //Funktion der neuen Instanz pokeAPI aufrufen
-            Ability a = pokeApi.getAbility(1);
-            System.out.println(a);
-            getActivity().runOnUiThread(() -> {
-                // Hier UI verändern: show text on UI/button
-                binding.textviewFirst.setText(bulbasaur.toString());
-            });
+            try {
+                Pokemon bulbasaur = new PokeAPI().requestPokemon(1); //Funktion der neuen Instanz pokeAPI aufrufen
+                getActivity().runOnUiThread(() -> {
+                    // Hier UI verändern: show text on UI/button
+                    String name = bulbasaur.name;
+                    name = Character.toUpperCase(name.charAt(0)) + name.substring(1); //Erster Character groß geschrieben :(
+                    binding.pokemonName.setText("Name: "+name);
+                    binding.pokemonExperience.setText("Experience: "+ bulbasaur.baseExperience);
+                });
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         }).start();
 
     }

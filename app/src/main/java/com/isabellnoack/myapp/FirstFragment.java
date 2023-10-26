@@ -42,7 +42,7 @@ public class FirstFragment extends Fragment {
             }
         });
 
-
+        //Test Anzeige Bulbasaur mit PokeKotlin
         new Thread(() -> {
             PokeApi pokeApi = new PokeApiClient(); //Instanz einer Klasse erstellen
             PokemonSpecies bulbasaur = pokeApi.getPokemonSpecies(1); //Funktion der neuen Instanz pokeAPI aufrufen

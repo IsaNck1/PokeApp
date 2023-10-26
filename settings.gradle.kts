@@ -10,6 +10,8 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+
+        //PokeKotlin Repository
         maven {
             url = uri("https://jitpack.io")
         }

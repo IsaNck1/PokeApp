@@ -30,10 +30,12 @@ public class FirstFragment extends Fragment {
 
     }
 
+    int pokemonId = 1;
+
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        binding.buttonFirst.setOnClickListener(new View.OnClickListener() {
+        binding.nextPageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 NavHostFragment.findNavController(FirstFragment.this)
@@ -41,22 +43,33 @@ public class FirstFragment extends Fragment {
             }
         });
 
+        binding.nextPokemonButton.setOnClickListener((view1) -> {
+            // wir laden das nächste Pokemon
+            pokemonId++;
+            loadPokemon();
+        });
+
+        // wenn wir laden, laden wir Pokemon mit ID 1
+        loadPokemon();
+
+    }
+
+    void loadPokemon() {
         //Neuer Thread da Hauptthread nicht blockiert werden darf
         new Thread(() -> {
             try {
-                Pokemon bulbasaur = new PokeAPI().requestPokemon(1); //Funktion der neuen Instanz pokeAPI aufrufen
+                Pokemon bulbasaur = new PokeAPI().requestPokemon(pokemonId); //Funktion der neuen Instanz pokeAPI aufrufen
                 getActivity().runOnUiThread(() -> {
                     // Hier UI verändern: show text on UI/button
                     String name = bulbasaur.name;
                     name = Character.toUpperCase(name.charAt(0)) + name.substring(1); //Erster Character groß geschrieben :(
-                    binding.pokemonName.setText("Name: "+name);
-                    binding.pokemonExperience.setText("Experience: "+ bulbasaur.baseExperience);
+                    binding.pokemonName.setText("Name: " + name);
+                    binding.pokemonExperience.setText("Experience: " + bulbasaur.baseExperience);
                 });
-            } catch (IOException e) {
-                throw new RuntimeException(e);
+            } catch (IOException ignored) {
+                // todo send warning to user
             }
         }).start();
-
     }
 
     @Override

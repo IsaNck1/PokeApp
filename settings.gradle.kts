@@ -14,7 +14,7 @@ dependencyResolutionManagement {
         //PokeKotlin Repository (wird nicht genutzt)
         //maven {
         //  url = uri("https://jitpack.io")
-        }
+        //}
     }
 }
 

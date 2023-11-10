@@ -25,6 +25,13 @@
             android:layout_gravity="center"
             android:text="Next Pokemon" />
 
+        <Button
+            android:id="@+id/previous_pokemon_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="Previous Pokemon" />
+
         <TextView
             android:id="@+id/pokemon_name"
             android:layout_width="wrap_content"

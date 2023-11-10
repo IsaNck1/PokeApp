@@ -11,9 +11,9 @@ dependencyResolutionManagement {
         google()
         mavenCentral()
 
-        //PokeKotlin Repository
-        maven {
-            url = uri("https://jitpack.io")
+        //PokeKotlin Repository (wird nicht genutzt)
+        //maven {
+        //  url = uri("https://jitpack.io")
         }
     }
 }

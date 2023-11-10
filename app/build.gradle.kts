@@ -39,8 +39,8 @@ dependencies {
     implementation("androidx.navigation:navigation-fragment:2.5.3")
     implementation("androidx.navigation:navigation-ui:2.5.3")
 
-    //PokeKotlin Dependency
-    implementation("com.github.PokeAPI:pokekotlin:2.3.1")
+    //PokeKotlin Dependency (wird nicht genutzt)
+    //implementation("com.github.PokeAPI:pokekotlin:2.3.1")
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")

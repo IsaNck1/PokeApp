@@ -13,6 +13,15 @@ import java.net.URL;
  */
 public class PokeAPI {
 
+    //1
+    public Pokemon requestPokemon(int id) throws IOException {
+        //Wo lesen wir unsere Daten her
+        String url = "https://pokeapi.co/api/v2/pokemon/" + id; //Datenquelle
+        JsonReader reader;
+        reader = requestJsonReader(url); //Interpretiert Text aus Internet als JSON
+        return readPokemon(reader); //Funktion für JSON in Pokemon Instanz
+    }
+
     //2
     JsonReader requestJsonReader(String url) throws IOException { //JSON lesen
         HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
@@ -25,15 +34,7 @@ public class PokeAPI {
         return readBerry(requestJsonReader("https://pokeapi.co/api/v2/berry/" + id));
     }
 
-    //1
-    public Pokemon requestPokemon(int id) throws IOException {
-        //Wo lesen wir unsere Daten her
-        String url = "https://pokeapi.co/api/v2/pokemon/" + id; //Datenquelle
-        JsonReader reader = requestJsonReader(url); //Interpretiert Text aus Internet als JSON
-        return readPokemon(reader); //Funktion für JSON in Pokemon Instanz
-    }
-
-    //3 Read Pokemon auf
+    //3
     Pokemon readPokemon(JsonReader reader) throws IOException {
         Pokemon pokemon = new Pokemon(); //Pokemon erstellen (Instanz der Klasse Pokemon)
         reader.beginObject();

@@ -2,8 +2,8 @@ package com.isabellnoack.myapp.api;
 
 public class Pokemon {
     public Pokemon() { //Konstruktor, Funktion wird aufgerufen bei Erstellung von neuer Instanz von Pokemon Klasse (Zum mitgeben von Werten etc.)
-
     }
+
     public String name;
     public int baseExperience;
 

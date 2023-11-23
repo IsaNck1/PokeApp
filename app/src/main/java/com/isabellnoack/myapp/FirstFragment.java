@@ -75,13 +75,14 @@ public class FirstFragment extends Fragment {
         //Neuer Thread da Hauptthread nicht blockiert werden darf
         new Thread(() -> {
             try {
-                Pokemon bulbasaur = new PokeAPI().requestPokemon(pokemonId); //Funktion der neuen Instanz pokeAPI aufrufen
+                Pokemon pokemon = new PokeAPI().requestPokemon(pokemonId); //Funktion der neuen Instanz pokeAPI aufrufen
                 getActivity().runOnUiThread(() -> {
                     //UI
-                    String name = bulbasaur.name;
+                    String name = pokemon.name;
                     name = Character.toUpperCase(name.charAt(0)) + name.substring(1); //Erster Character groß geschrieben :(
                     binding.pokemonName.setText("Name: " + name);
-                    binding.pokemonExperience.setText("Experience: " + bulbasaur.baseExperience);
+                    binding.pokemonExperience.setText("Experience: " + pokemon.baseExperience);
+                    binding.pokemonId.setText("ID: " + pokemonId);
                 });
             } catch (IOException ignored) {
                 // todo send warning to user

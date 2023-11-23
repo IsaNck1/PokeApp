@@ -46,7 +46,7 @@ public class FirstFragment extends Fragment {
         // NEXT POKEMON
         binding.nextPokemonButton.setOnClickListener((view1) -> {
             // laden des nächsten Pokemon
-            if (pokemonId == 3) {
+            if (pokemonId == 1017) {
                 pokemonId = 1;
             } else {
                 pokemonId++;
@@ -58,7 +58,7 @@ public class FirstFragment extends Fragment {
         binding.previousPokemonButton.setOnClickListener((view1) -> {
             // laden des vorherigen Pokemon
             if (pokemonId == 1) {
-                pokemonId = 900;
+                pokemonId = 1017;
             } else {
                 pokemonId--;
             }

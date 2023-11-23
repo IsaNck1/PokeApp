@@ -44,20 +44,11 @@ public class PokeAPI {
                 case "name":
                     pokemon.name = reader.nextString(); //Formatierung: Strg+Alt+O Strg+Alt+L
                     break;
-                    
+
                 case "base_experience":
-                    if (reader.hasNext()) {
-                        if (reader.peek() != JsonToken.NULL) { //Überprüft ob Token einen Wert hat
-                            pokemon.baseExperience = reader.nextInt();
-                        } else {
-                            // Handle den Fall, wenn der Wert im JSON null ist
-                            pokemon.baseExperience = 0;
-                            reader.nextNull();// Bewege den Leser zum nächsten Element im JSON
-                        }
-                    } else {
-                        //"base_experience" nicht im JSON vorhanden
-                        pokemon.baseExperience = 0;
-                    }
+                    if (reader.peek() == JsonToken.NUMBER) { //Überprüft ob Token eine Zahl ist
+                        pokemon.baseExperience = reader.nextInt();
+                    } else reader.skipValue();
                     break;
                 default:
                     reader.skipValue();

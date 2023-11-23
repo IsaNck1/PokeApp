@@ -43,13 +43,30 @@ public class FirstFragment extends Fragment {
             }
         });
 
+        // NEXT POKEMON
         binding.nextPokemonButton.setOnClickListener((view1) -> {
-            // wir laden das nächste Pokemon
-            pokemonId++;
+            // laden des nächsten Pokemon
+            if (pokemonId == 3) {
+                pokemonId = 1;
+            } else {
+                pokemonId++;
+            }
             loadPokemon();
         });
 
-        // wenn wir laden, laden wir Pokemon mit ID 1
+        //PREVIOUS POKEMON
+        binding.previousPokemonButton.setOnClickListener((view1) -> {
+            // laden des vorherigen Pokemon
+            if (pokemonId == 1) {
+                pokemonId = 900;
+            } else {
+                pokemonId--;
+            }
+
+            loadPokemon();
+        });
+
+        // Pokemon mit ID 1 wird geladen
         loadPokemon();
 
     }
@@ -60,7 +77,7 @@ public class FirstFragment extends Fragment {
             try {
                 Pokemon bulbasaur = new PokeAPI().requestPokemon(pokemonId); //Funktion der neuen Instanz pokeAPI aufrufen
                 getActivity().runOnUiThread(() -> {
-                    // Hier UI verändern: show text on UI/button
+                    //UI
                     String name = bulbasaur.name;
                     name = Character.toUpperCase(name.charAt(0)) + name.substring(1); //Erster Character groß geschrieben :(
                     binding.pokemonName.setText("Name: " + name);

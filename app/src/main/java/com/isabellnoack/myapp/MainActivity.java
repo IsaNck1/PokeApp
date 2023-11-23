@@ -20,12 +20,6 @@ import com.isabellnoack.myapp.databinding.ActivityMainBinding;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import me.sargunvohra.lib.pokekotlin.client.PokeApi;
-import me.sargunvohra.lib.pokekotlin.client.PokeApiClient;
-import me.sargunvohra.lib.pokekotlin.model.Ability;
-import me.sargunvohra.lib.pokekotlin.model.ApiResource;
-import me.sargunvohra.lib.pokekotlin.model.PokemonSpecies;
-
 public class MainActivity extends AppCompatActivity {
 
     private AppBarConfiguration appBarConfiguration;

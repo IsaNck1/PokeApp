@@ -1,5 +1,6 @@
 package com.isabellnoack.myapp;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -71,6 +72,8 @@ public class FirstFragment extends Fragment {
 
     }
 
+    @SuppressLint("SetTextI18n") //Nicht highlighten
+
     void loadPokemon() {
         //Neuer Thread da Hauptthread nicht blockiert werden darf
         new Thread(() -> {
@@ -83,6 +86,7 @@ public class FirstFragment extends Fragment {
                     binding.pokemonName.setText("Name: " + name);
                     binding.pokemonExperience.setText("Experience: " + pokemon.baseExperience);
                     binding.pokemonId.setText("ID: " + pokemonId);
+                    //binding.pokemonImage.setImageBitmap();
                 });
             } catch (IOException ignored) {
                 // todo send warning to user

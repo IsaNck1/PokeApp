@@ -38,7 +38,7 @@ public class PokeAPI {
     //3
     Pokemon readPokemon(JsonReader reader) throws IOException {
         Pokemon pokemon = new Pokemon(); //Pokemon erstellen (Instanz der Klasse Pokemon)
-        reader.beginObject();
+        reader.beginObject();   //Erste geschwungene Klammer geöffnet
         while (reader.hasNext()) {
             switch (reader.nextName()) {
                 case "name":
@@ -49,6 +49,45 @@ public class PokeAPI {
                     if (reader.peek() == JsonToken.NUMBER) { //Überprüft ob Token eine Zahl ist
                         pokemon.baseExperience = reader.nextInt();
                     } else reader.skipValue();
+                    break;
+
+                case "sprites": //Darunter weitere geschungene Klammer, daher neues BeginObjekt
+
+                    reader.beginObject(); //BeginObjekt hat immer Reader.has Next
+                    while (reader.hasNext()) {
+                        switch (reader.nextName()) {
+                            case "other": //Darunter weitere geschungene Klammer, daher neues BeginObjekt
+
+                                reader.beginObject();
+                                while (reader.hasNext()) {
+                                    switch (reader.nextName()) {
+                                        case "dream_world": //Darunter weitere geschungene Klammer, daher neues BeginObjekt
+
+                                            reader.beginObject();
+                                            while (reader.hasNext()) {
+                                                switch (reader.nextName()) {
+                                                    case "front_default":
+                                                        if (reader.peek() == JsonToken.STRING) {
+                                                        pokemon.imageUrlDreamWorld = reader.nextString();
+                                                        } else reader.skipValue();
+                                                        break; // Weil ganz unten, bitte verlasse das switch
+                                                    default:
+                                                        reader.skipValue();
+                                                }
+                                            }
+                                            reader.endObject();
+                                            break;
+                                        default:
+                                            reader.skipValue();
+                                    }
+                                }
+                                reader.endObject();
+                                break;
+                            default:
+                                reader.skipValue();
+                        }
+                    }
+                    reader.endObject();
                     break;
                 default:
                     reader.skipValue();

@@ -5,7 +5,7 @@ public class Pokemon {
     }
     public String name = "Unknown";
     public int baseExperience = 0;
-    public String imageUrlDreamWorld = "";
+    public String imageUrl = "";
 
    //magic mit: funktion löschen, "tostring" hier drunter eingeben, und enter (generate via wizard)
 
@@ -14,7 +14,7 @@ public class Pokemon {
         return "Pokemon{" +
                 "name='" + name + '\'' +
                 ", baseExperience=" + baseExperience +
-                ", imageUrlDreamWorld='" + imageUrlDreamWorld + '\'' +
+                ", imageUrlDreamWorld='" + imageUrl + '\'' +
                 '}';
     }
 }

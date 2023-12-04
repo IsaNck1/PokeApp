@@ -1,6 +1,7 @@
 package com.isabellnoack.myapp;
 
 import android.annotation.SuppressLint;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -80,20 +81,52 @@ public class FirstFragment extends Fragment {
             try {
                 Pokemon pokemon = new PokeAPI().requestPokemon(pokemonId); //Funktion der neuen Instanz pokeAPI aufrufen
                 getActivity().runOnUiThread(() -> {
+
                     //UI
                     String name = pokemon.name;
                     name = Character.toUpperCase(name.charAt(0)) + name.substring(1); //Erster Character groß geschrieben :(
                     binding.pokemonName.setText("Name: " + name);
                     binding.pokemonExperience.setText("Experience: " + pokemon.baseExperience);
                     binding.pokemonId.setText("ID: " + pokemonId);
-                    //binding.pokemonImage.setImageBitmap();
+
+
+                    // Bild laden und in ImageView setzen
+                    //try {
+                    //    Bitmap bitmap = PokeAPI.ImageLoader.loadImageFromUrl(pokemon.imageUrlDreamWorld); // Hier wird der entsprechenden Bild-URL-Pfad übergeben
+                    //    binding.pokemonImage.setImageBitmap(bitmap); //an Layout übergeben
+                    //} catch (IOException e) {
+                    //    e.printStackTrace(); //Fehlermeldung
+                    //}
+
+                    // Bild laden und in ImageView setzen
+                    try {
+                        new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                try {
+                                    final Bitmap bitmap = PokeAPI.ImageLoader.loadImageFromUrl(pokemon.imageUrl);
+
+                                    getActivity().runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            binding.pokemonImage.setImageBitmap(bitmap);
+                                        }
+                                    });
+                                } catch (IOException e) {
+                                    e.printStackTrace(); //Fehlermeldung
+                                }
+                            }
+                        }).start();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
                 });
             } catch (IOException ignored) {
                 // todo send warning to user
             }
         }).start();
     }
-
     @Override
     public void onDestroyView() {
         super.onDestroyView();

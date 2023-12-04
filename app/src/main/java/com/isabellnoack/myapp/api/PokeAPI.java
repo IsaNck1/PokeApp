@@ -1,10 +1,13 @@
 package com.isabellnoack.myapp.api;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.util.JsonReader;
 import android.util.JsonToken;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -31,9 +34,25 @@ public class PokeAPI {
         return new JsonReader(bufferedReader); //Text/JSON als Antwort
     }
 
-    public Berry requestBerry(int id) throws IOException {
-        return readBerry(requestJsonReader("https://pokeapi.co/api/v2/berry/" + id));
+    public static class ImageLoader {
+
+        public static Bitmap loadImageFromUrl(String imageUrl) throws IOException {
+            HttpURLConnection connection = (HttpURLConnection) new URL(imageUrl).openConnection();
+            connection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/118.0.0.0 Safari/537.36");
+
+            // Öffne einen InputStream zum Lesen der Bildressource
+            InputStream inputStream = connection.getInputStream();
+
+            // Dekodiere den InputStream in ein Bitmap
+            Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
+
+            // Schließe den InputStream
+            inputStream.close();
+
+            return bitmap;
+        }
     }
+
 
     //3
     Pokemon readPokemon(JsonReader reader) throws IOException {
@@ -61,14 +80,14 @@ public class PokeAPI {
                                 reader.beginObject();
                                 while (reader.hasNext()) {
                                     switch (reader.nextName()) {
-                                        case "dream_world": //Darunter weitere geschungene Klammer, daher neues BeginObjekt
+                                        case "official-artwork": //Darunter weitere geschungene Klammer, daher neues BeginObjekt
 
                                             reader.beginObject();
                                             while (reader.hasNext()) {
                                                 switch (reader.nextName()) {
                                                     case "front_default":
                                                         if (reader.peek() == JsonToken.STRING) {
-                                                        pokemon.imageUrlDreamWorld = reader.nextString();
+                                                        pokemon.imageUrl = reader.nextString();
                                                         } else reader.skipValue();
                                                         break; // Weil ganz unten, bitte verlasse das switch
                                                     default:

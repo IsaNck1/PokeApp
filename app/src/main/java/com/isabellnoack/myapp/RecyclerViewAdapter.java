@@ -42,7 +42,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     @Override
     public void onBindViewHolder(@NonNull RecyclerViewAdapter.ViewHolder holder, int position) {
         holder.imageView.setImageBitmap(recyclerViewItems.get(position).image);
-        holder.textViewID.setText(recyclerViewItems.get(position).id.toString());
+        holder.textViewID.setText("ID: " + recyclerViewItems.get(position).id.toString()); //Sting mit "ID:" + ID
         holder.textViewName.setText(recyclerViewItems.get(position).name);
     }
 

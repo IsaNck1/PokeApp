@@ -27,6 +27,7 @@ public class PokemonFragment extends Fragment {
     ) {
 
         binding = FragmentPokemonBinding.inflate(inflater, container, false);
+
         return binding.getRoot();
 
     }
@@ -36,6 +37,7 @@ public class PokemonFragment extends Fragment {
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        //Button next page
         binding.nextPageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -44,7 +46,7 @@ public class PokemonFragment extends Fragment {
             }
         });
 
-        // NEXT POKEMON
+        //Button NEXT POKEMON
         binding.nextPokemonButton.setOnClickListener((view1) -> {
             // laden des nächsten Pokemon
             if (pokemonId == 1017) { //1017 ist das letzte Pokemon
@@ -55,7 +57,7 @@ public class PokemonFragment extends Fragment {
             loadPokemon();
         });
 
-        //PREVIOUS POKEMON
+        //Button PREVIOUS POKEMON
         binding.previousPokemonButton.setOnClickListener((view1) -> {
             // laden des vorherigen Pokemon
             if (pokemonId == 1) {
@@ -67,7 +69,7 @@ public class PokemonFragment extends Fragment {
             loadPokemon();
         });
 
-        // Pokemon mit ID 1 wird geladen
+        // Pokemon anhand ID wird geladen
         loadPokemon();
 
     }

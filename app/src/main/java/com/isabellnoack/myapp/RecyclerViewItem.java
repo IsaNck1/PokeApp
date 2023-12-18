@@ -19,6 +19,8 @@ public class RecyclerViewItem {
         Pokemon pokemon = new PokeAPI().requestPokemon(id);
 
         this.name = pokemon.name;
+        this.name = Character.toUpperCase(name.charAt(0)) + name.substring(1); //Erster Character groß geschrieben
+
         this.id = id;
         this.image = PokeAPI.ImageLoader.loadImageFromUrl(pokemon.imageUrl);
 

@@ -62,6 +62,8 @@ public class ListFragment extends Fragment {
                 recyclerViewItems.add(new RecyclerViewItem(5)); //Listen Eintrag
                 recyclerViewItems.add(new RecyclerViewItem(6)); //Listen Eintrag
                 recyclerViewItems.add(new RecyclerViewItem(7)); //Listen Eintrag
+                recyclerViewItems.add(new RecyclerViewItem(999)); //Listen Eintrag
+                recyclerViewItems.add(new RecyclerViewItem(1017)); //Listen Eintrag
             } catch (IOException ignored) {
                 // todo send warning to user
             }

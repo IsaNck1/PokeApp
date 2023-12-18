@@ -13,21 +13,20 @@ import androidx.navigation.fragment.NavHostFragment;
 
 import com.isabellnoack.myapp.api.PokeAPI;
 import com.isabellnoack.myapp.api.Pokemon;
-import com.isabellnoack.myapp.databinding.FragmentFirstBinding;
+import com.isabellnoack.myapp.databinding.FragmentPokemonBinding;
 
 import java.io.IOException;
 
-public class FirstFragment extends Fragment {
+public class PokemonFragment extends Fragment {
 
-    private FragmentFirstBinding binding;
-
+    private FragmentPokemonBinding binding;
     @Override
     public View onCreateView(
             LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState
     ) {
 
-        binding = FragmentFirstBinding.inflate(inflater, container, false);
+        binding = FragmentPokemonBinding.inflate(inflater, container, false);
         return binding.getRoot();
 
     }
@@ -40,7 +39,7 @@ public class FirstFragment extends Fragment {
         binding.nextPageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                NavHostFragment.findNavController(FirstFragment.this)
+                NavHostFragment.findNavController(PokemonFragment.this)
                         .navigate(R.id.action_FirstFragment_to_SecondFragment);
             }
         });

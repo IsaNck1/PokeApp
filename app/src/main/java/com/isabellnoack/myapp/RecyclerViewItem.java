@@ -23,7 +23,11 @@ public class RecyclerViewItem {
         this.name = Character.toUpperCase(name.charAt(0)) + name.substring(1); //Erster Character groß geschrieben
 
         this.id = id;
-        this.image = PokeAPI.ImageLoader.loadImageFromUrl(pokemon.imageUrl);
+
+        if (pokemon.imageUrl != "") {
+            this.image = PokeAPI.ImageLoader.loadImageFromUrl(pokemon.imageUrl);
+        }
+
 
     }
 }

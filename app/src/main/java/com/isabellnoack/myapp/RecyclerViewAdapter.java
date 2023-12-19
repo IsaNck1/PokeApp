@@ -20,6 +20,8 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.isabellnoack.myapp.api.PokeAPI;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -64,7 +66,12 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                     public void run() {
 
                         //holder.imageView.setImageURI(Uri.parse(item.pokemon.imageUrl));
-                        holder.imageView.setImageBitmap(item.image);
+                        if (item.image != null) {
+                            holder.imageView.setImageBitmap(item.image);
+                        } else {
+                            holder.imageView.setImageResource(R.drawable.empty);
+                        }
+
                         holder.textViewID.setText("ID: " + item.id.toString()); //Sting mit "ID:" + ID
                         holder.textViewName.setText(item.name);
                     }
@@ -114,7 +121,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     // Grösse der Liste
     @Override
     public int getItemCount() {
-        return  40;
+        return  1017;
         //return recyclerViewItems.size();
 
     }

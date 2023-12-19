@@ -24,6 +24,5 @@ public class RecyclerViewItem {
         this.id = id;
         this.image = PokeAPI.ImageLoader.loadImageFromUrl(pokemon.imageUrl);
 
-
     }
 }

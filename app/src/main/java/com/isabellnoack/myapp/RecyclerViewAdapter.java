@@ -6,9 +6,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
@@ -20,11 +23,14 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     //und context wird für den Zugriff auf Android-Ressourcen verwendet
     private ArrayList<RecyclerViewItem> recyclerViewItems; //ArrayList<typ> variablen-name
     private Context context;
+    private int numberOfColumns; // NEU: Variable für die Anzahl der Spalten hinzufügen
+
 
     //Konstruktor initialisiert die Klassenvariablen mit den übergebenen Werten
-    public RecyclerViewAdapter(ArrayList<RecyclerViewItem> recyclerViewItems, Context context) {
+    public RecyclerViewAdapter(ArrayList<RecyclerViewItem> recyclerViewItems, Context context, int numberOfColumns) {
         this.recyclerViewItems = recyclerViewItems;
         this.context = context;
+        this.numberOfColumns = numberOfColumns; // NEU: Anzahl der Spalten setzen
     }
 
     @NonNull
@@ -44,7 +50,27 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         holder.imageView.setImageBitmap(recyclerViewItems.get(position).image);
         holder.textViewID.setText("ID: " + recyclerViewItems.get(position).id.toString()); //Sting mit "ID:" + ID
         holder.textViewName.setText(recyclerViewItems.get(position).name);
+
+
+        // Anpassung der Anordnung der TextViews basierend auf der Anzahl der Spalten
+        if (numberOfColumns == 1) {
+            // Wenn es nur eine Spalte gibt, setze die TextViews nebeneinander und das Layout horizontal
+            holder.textViewName.getLayoutParams().width = 0; // layout_width auf 0dp setzen
+            holder.textViewID.getLayoutParams().width = 0; // layout_width auf 0dp setzen
+            holder.layoutChanged.setOrientation(LinearLayout.HORIZONTAL);
+            holder.imageView.setAdjustViewBounds(false);
+        } else {
+            // Wenn es mehr als eine Spalte gibt, setze die TextViews untereinander und das Layout vertikal
+            holder.textViewName.getLayoutParams().width = ViewGroup.LayoutParams.MATCH_PARENT; // layout_width auf match_parent setzen
+            holder.textViewID.getLayoutParams().width = ViewGroup.LayoutParams.MATCH_PARENT; // layout_width auf match_parent setzen
+            holder.layoutChanged.setOrientation(LinearLayout.VERTICAL);
+            holder.imageView.setAdjustViewBounds(true);
+        }
+
+
     }
+
+
 
 
     // Grösse der Liste
@@ -53,16 +79,20 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         return recyclerViewItems.size();
     }
 
+
     // Definition ViewHolder Klasse
+
     public class ViewHolder extends RecyclerView.ViewHolder {
         ImageView imageView;
         TextView textViewID;
         TextView textViewName;
+        LinearLayout layoutChanged; // Layout Orientation
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             imageView = itemView.findViewById(R.id.list_pokemon_image); //Layout finden
             textViewName = itemView.findViewById(R.id.list_pokemon_name);
             textViewID = itemView.findViewById(R.id.list_pokemon_id);
+            layoutChanged = itemView.findViewById(R.id.layoutchanged); // Layout Orientation
         }
     }
 }

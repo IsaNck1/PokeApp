@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -40,6 +41,7 @@ public class ListFragment extends Fragment {
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        //Button PREVIOUS PAGE
         binding.buttonSecond.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -51,19 +53,17 @@ public class ListFragment extends Fragment {
         Context context = view.getContext();
 
         new Thread(() -> {
-
-            //1 Neue Array Liste aus RecyclerViewItem
+            //Neue Array Liste aus RecyclerViewItem
             recyclerViewItems = new ArrayList<RecyclerViewItem>();
 
-            //2 Array Liste neues Item hinzufügen
+            //Array Liste neues Item hinzufügen
             try {
-                recyclerViewItems.add(new RecyclerViewItem(3)); //Listen Eintrag
-                recyclerViewItems.add(new RecyclerViewItem(4)); //Listen Eintrag
-                recyclerViewItems.add(new RecyclerViewItem(5)); //Listen Eintrag
-                recyclerViewItems.add(new RecyclerViewItem(6)); //Listen Eintrag
-                recyclerViewItems.add(new RecyclerViewItem(7)); //Listen Eintrag
-                recyclerViewItems.add(new RecyclerViewItem(999)); //Listen Eintrag
-                recyclerViewItems.add(new RecyclerViewItem(1017)); //Listen Eintrag
+                //Schleife, Listen Eintrag für alle Pokemon ID von 1 bis 1017
+                for (int id = 1; id <= 10; id++) {
+                    recyclerViewItems.add(new RecyclerViewItem(id)); //Listen Eintrag
+                }
+                //To-Do: performantes laden!
+
             } catch (IOException ignored) {
                 // todo send warning to user
             }
@@ -71,11 +71,16 @@ public class ListFragment extends Fragment {
                 @Override
                 public void run() {
 
-                    //NEU - was tut das?
+                    //set Fixed Size
                     binding.recyclerView.setHasFixedSize(true);
-                    binding.recyclerView.setLayoutManager(new LinearLayoutManager(context)); //wofür?
 
-                    RecyclerViewAdapter recyclerViewAdapter = new RecyclerViewAdapter(recyclerViewItems,context);
+                    //Hier wird der GridLayoutManager mit 1,2 oder 3 Spalten erstellt
+                    int numberOfColumns = 2;
+                    GridLayoutManager layoutManager = new GridLayoutManager(context, numberOfColumns);
+                    binding.recyclerView.setLayoutManager(layoutManager);
+
+                    //Hier wird der Adapter für die RecyclerView gesetzt (Alle Variablen werden übergeben: recyclerViewItems,context,numberOfColumns)
+                    RecyclerViewAdapter recyclerViewAdapter = new RecyclerViewAdapter(recyclerViewItems, context, numberOfColumns);
                     binding.recyclerView.setAdapter(recyclerViewAdapter);
                 }
             });

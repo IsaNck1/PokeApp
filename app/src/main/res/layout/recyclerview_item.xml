@@ -4,48 +4,69 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="15dp"
+    android:layout_margin="10dp"
     app:cardElevation="1dp"
     app:cardCornerRadius="20dp">
 
-
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical">
 
         <ImageView
             android:id="@+id/list_pokemon_image"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="#CECAD0" />
+            android:background="#CECAD0"
+            android:padding="5dp"
+
+            android:adjustViewBounds="true"/> <!-- Damit es nicht höher ist als es muss -->
 
         <LinearLayout
+            android:id="@+id/layoutchanged"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="horizontal"> <!-- Orientation horizontal / vertical -->
+
+            <!-- Text Views:
+            for list_pokemon_name UND list_pokemon_id
+            orientation horizontal
+
+                android:layout_width="0dp"
+
+            orientation vertical
+
+                android:layout_width="match_parent"
+            -->
 
             <TextView
                 android:id="@+id/list_pokemon_name"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="wrap_content"
                 android:text="Bulbasaur"
                 android:gravity="center"
                 android:padding="5dp"
-                android:textSize="20dp" />
+                android:textSize="20dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+
+                android:layout_width="0dp"
+
+
+ />
 
             <TextView
                 android:id="@+id/list_pokemon_id"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="wrap_content"
                 android:text="1"
                 android:gravity="center"
                 android:padding="5dp"
-                android:textSize="20dp" />
+                android:textSize="20dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+
+                android:layout_width="0dp"
+ />
 
         </LinearLayout>
-    </LinearLayout>
+
+</LinearLayout>
 
 </androidx.cardview.widget.CardView>

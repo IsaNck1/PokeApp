@@ -1,8 +1,12 @@
 package com.isabellnoack.myapp;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.icu.text.Transliterator;
+import android.net.Uri;
+import android.telephony.SmsManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,23 +20,23 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> {
 //Adapter als Übersetzer von der RecyclingView zu meinen Daten und zu Layout
 
-    //Deklarierung von zwei private Variablen: recyclerViewItems ist eine Liste für die anzuzeigenden Daten,
-    //und context wird für den Zugriff auf Android-Ressourcen verwendet
-    private ArrayList<RecyclerViewItem> recyclerViewItems; //ArrayList<typ> variablen-name
-    private Context context;
+    private Context context; //
     private int numberOfColumns; // NEU: Variable für die Anzahl der Spalten hinzufügen
 
+    private Activity activity;
 
     //Konstruktor initialisiert die Klassenvariablen mit den übergebenen Werten
-    public RecyclerViewAdapter(ArrayList<RecyclerViewItem> recyclerViewItems, Context context, int numberOfColumns) {
-        this.recyclerViewItems = recyclerViewItems;
+    public RecyclerViewAdapter(Context context, int numberOfColumns, Activity activity) {
         this.context = context;
         this.numberOfColumns = numberOfColumns; // NEU: Anzahl der Spalten setzen
+        this.activity = activity;
     }
 
     @NonNull
@@ -49,12 +53,32 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     // Für den ViewHolder werden an der Position position (An welcher Stelle in der Liste) die Daten abgefragt
     @Override
     public void onBindViewHolder(@NonNull RecyclerViewAdapter.ViewHolder holder, int position) {
-        holder.imageView.setImageBitmap(recyclerViewItems.get(position).image);
-        holder.textViewID.setText("ID: " + recyclerViewItems.get(position).id.toString()); //Sting mit "ID:" + ID
-        holder.textViewName.setText(recyclerViewItems.get(position).name);
+
+        int id = position + 1;
+
+        Thread t = new Thread(() -> {
+            try {
+                final RecyclerViewItem item = new RecyclerViewItem(id);
+                activity.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        //holder.imageView.setImageURI(Uri.parse(item.pokemon.imageUrl));
+                        holder.imageView.setImageBitmap(item.image);
+                        holder.textViewID.setText("ID: " + item.id.toString()); //Sting mit "ID:" + ID
+                        holder.textViewName.setText(item.name);
+                    }
+                });
+
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
+
+        t.start();
 
         holder.cardView.setOnClickListener(e->{
-            int pokemonId = recyclerViewItems.get(holder.getAdapterPosition()).id;
+            //int pokemonId = recyclerViewItems.get(holder.getAdapterPosition()).id;
 
             // Hier Methode im Fragment aufrufen und die Pokemon-ID übergeben
             // aber wie?
@@ -63,6 +87,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             // intent.putExtra("id", pokemonId);
             // context.startActivity(intent);
         });
+
 
         // Anpassung der Anordnung der TextViews basierend auf der Anzahl der Spalten
         if (numberOfColumns == 1) {
@@ -84,10 +109,14 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
 
 
+
+
     // Grösse der Liste
     @Override
     public int getItemCount() {
-        return recyclerViewItems.size();
+        return  10;
+        //return recyclerViewItems.size();
+
     }
 
 

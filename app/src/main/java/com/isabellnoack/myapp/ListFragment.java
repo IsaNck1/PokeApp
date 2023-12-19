@@ -73,16 +73,16 @@ public class ListFragment extends Fragment {
             recyclerViewItems = new ArrayList<RecyclerViewItem>();
 
             //Array Liste neues Item hinzufügen
-            try {
-                //Schleife, Listen-Eintrag für alle Pokemon ID von 1 bis 1017
-                for (int id = 1; id <= 10; id++) {
-                    recyclerViewItems.add(new RecyclerViewItem(id)); //Listen Eintrag
-                }
-                //To-Do: performantes laden!
-
-            } catch (IOException ignored) {
-                // todo send warning to user
-            }
+//            try {
+//                //Schleife, Listen-Eintrag für alle Pokemon ID von 1 bis 1017
+//                for (int id = 1; id <= 10; id++) {
+//                    recyclerViewItems.add(new RecyclerViewItem(id)); //Listen Eintrag
+//                }
+//                //To-Do: performantes laden!
+//
+//            } catch (IOException ignored) {
+//                // todo send warning to user
+//            }
             getActivity().runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
@@ -96,7 +96,7 @@ public class ListFragment extends Fragment {
                     binding.recyclerView.setLayoutManager(layoutManager);
 
                     //Hier wird der Adapter für die RecyclerView gesetzt (Alle Variablen werden übergeben: recyclerViewItems,context,numberOfColumns)
-                    RecyclerViewAdapter recyclerViewAdapter = new RecyclerViewAdapter(recyclerViewItems, context, numberOfColumns);
+                    RecyclerViewAdapter recyclerViewAdapter = new RecyclerViewAdapter(context, numberOfColumns, getActivity());
                     binding.recyclerView.setAdapter(recyclerViewAdapter);
                 }
             });
@@ -110,7 +110,7 @@ public class ListFragment extends Fragment {
         binding.recyclerView.setLayoutManager(layoutManager);
 
         // Adapter für die RecyclerView erneut setzen
-        RecyclerViewAdapter recyclerViewAdapter = new RecyclerViewAdapter(recyclerViewItems, getContext(), numberOfColumns);
+        RecyclerViewAdapter recyclerViewAdapter = new RecyclerViewAdapter(getContext(), numberOfColumns, getActivity());
         binding.recyclerView.setAdapter(recyclerViewAdapter);
     }
 

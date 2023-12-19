@@ -1,6 +1,7 @@
 package com.isabellnoack.myapp;
 
 import android.content.Context;
+import android.content.Intent;
 import android.icu.text.Transliterator;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +11,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -51,6 +53,16 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         holder.textViewID.setText("ID: " + recyclerViewItems.get(position).id.toString()); //Sting mit "ID:" + ID
         holder.textViewName.setText(recyclerViewItems.get(position).name);
 
+        holder.cardView.setOnClickListener(e->{
+            int pokemonId = recyclerViewItems.get(holder.getAdapterPosition()).id;
+
+            // Hier Methode im Fragment aufrufen und die Pokemon-ID übergeben
+            // aber wie?
+
+            // Intent intent = new Intent(context, PokemonFragment.class);
+            // intent.putExtra("id", pokemonId);
+            // context.startActivity(intent);
+        });
 
         // Anpassung der Anordnung der TextViews basierend auf der Anzahl der Spalten
         if (numberOfColumns == 1) {
@@ -59,6 +71,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             holder.textViewID.getLayoutParams().width = 0; // layout_width auf 0dp setzen
             holder.layoutChanged.setOrientation(LinearLayout.HORIZONTAL);
             holder.imageView.setAdjustViewBounds(false);
+
         } else {
             // Wenn es mehr als eine Spalte gibt, setze die TextViews untereinander und das Layout vertikal
             holder.textViewName.getLayoutParams().width = ViewGroup.LayoutParams.MATCH_PARENT; // layout_width auf match_parent setzen
@@ -66,8 +79,6 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             holder.layoutChanged.setOrientation(LinearLayout.VERTICAL);
             holder.imageView.setAdjustViewBounds(true);
         }
-
-
     }
 
 
@@ -86,13 +97,16 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         ImageView imageView;
         TextView textViewID;
         TextView textViewName;
-        LinearLayout layoutChanged; // Layout Orientation
+        LinearLayout layoutChanged;
+        CardView cardView;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             imageView = itemView.findViewById(R.id.list_pokemon_image); //Layout finden
             textViewName = itemView.findViewById(R.id.list_pokemon_name);
             textViewID = itemView.findViewById(R.id.list_pokemon_id);
-            layoutChanged = itemView.findViewById(R.id.layoutchanged); // Layout Orientation
+            layoutChanged = itemView.findViewById(R.id.layoutchanged); // für Layout Orientation horizontal und vertikal
+            cardView = itemView.findViewById(R.id.cardView); //Für den Onclick Listener
+
         }
     }
 }

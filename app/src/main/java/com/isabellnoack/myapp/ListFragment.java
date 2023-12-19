@@ -22,9 +22,8 @@ import java.util.ArrayList;
 
 public class ListFragment extends Fragment {
 
-    //NEU
     ArrayList<RecyclerViewItem> recyclerViewItems;
-
+    private int numberOfColumns = 1; // Anzahl der Spalten bei Start
     private FragmentListBinding binding;
 
     @Override
@@ -48,17 +47,34 @@ public class ListFragment extends Fragment {
                 NavHostFragment.findNavController(ListFragment.this)
                         .navigate(R.id.action_SecondFragment_to_FirstFragment);
             }
+
+
+        });
+
+        //Button Columns
+        binding.buttonNumberOfColumns.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (numberOfColumns == 3) {
+                    numberOfColumns = 1;
+                } else  {
+                    numberOfColumns++;
+                }
+                updateRecyclerView();
+            }
+
         });
 
         Context context = view.getContext();
 
         new Thread(() -> {
+
             //Neue Array Liste aus RecyclerViewItem
             recyclerViewItems = new ArrayList<RecyclerViewItem>();
 
             //Array Liste neues Item hinzufügen
             try {
-                //Schleife, Listen Eintrag für alle Pokemon ID von 1 bis 1017
+                //Schleife, Listen-Eintrag für alle Pokemon ID von 1 bis 1017
                 for (int id = 1; id <= 10; id++) {
                     recyclerViewItems.add(new RecyclerViewItem(id)); //Listen Eintrag
                 }
@@ -75,7 +91,7 @@ public class ListFragment extends Fragment {
                     binding.recyclerView.setHasFixedSize(true);
 
                     //Hier wird der GridLayoutManager mit 1,2 oder 3 Spalten erstellt
-                    int numberOfColumns = 2;
+                    //int numberOfColumns = 2;
                     GridLayoutManager layoutManager = new GridLayoutManager(context, numberOfColumns);
                     binding.recyclerView.setLayoutManager(layoutManager);
 
@@ -86,6 +102,16 @@ public class ListFragment extends Fragment {
             });
         }).start();
 
+    }
+
+    // Methode zur Aktualisierung der RecyclerView mit der neuen Anzahl von Spalten
+    private void updateRecyclerView() {
+        GridLayoutManager layoutManager = new GridLayoutManager(getContext(), numberOfColumns);
+        binding.recyclerView.setLayoutManager(layoutManager);
+
+        // Adapter für die RecyclerView erneut setzen
+        RecyclerViewAdapter recyclerViewAdapter = new RecyclerViewAdapter(recyclerViewItems, getContext(), numberOfColumns);
+        binding.recyclerView.setAdapter(recyclerViewAdapter);
     }
 
     @Override

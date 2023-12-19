@@ -114,7 +114,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     // Grösse der Liste
     @Override
     public int getItemCount() {
-        return  10;
+        return  40;
         //return recyclerViewItems.size();
 
     }

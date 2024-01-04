@@ -20,7 +20,7 @@
             android:id="@+id/button_second"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Pokemon" />
+            android:text="Pokémon" />
 
         <Space
             android:layout_width="8dp"

@@ -10,14 +10,9 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
-import com.isabellnoack.myapp.api.PokeAPI;
-import com.isabellnoack.myapp.api.Pokemon;
 import com.isabellnoack.myapp.databinding.FragmentListBinding;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
 public class ListFragment extends Fragment {
@@ -45,7 +40,7 @@ public class ListFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 NavHostFragment.findNavController(ListFragment.this)
-                        .navigate(R.id.action_SecondFragment_to_FirstFragment);
+                        .navigate(R.id.action_listFragment_to_pokemonFragment);
             }
 
 

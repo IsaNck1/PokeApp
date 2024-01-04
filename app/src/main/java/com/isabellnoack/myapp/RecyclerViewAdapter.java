@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.icu.text.Transliterator;
 import android.net.Uri;
+import android.os.Bundle;
 import android.telephony.SmsManager;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -17,6 +18,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -84,19 +87,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
         t.start();
 
-        holder.cardView.setOnClickListener(e->{
-            //int pokemonId = recyclerViewItems.get(holder.getAdapterPosition()).id;
 
-            // Hier Methode im Fragment aufrufen und die Pokemon-ID übergeben
-            // aber wie?
-
-            // Intent intent = new Intent(context, PokemonFragment.class);
-            // intent.putExtra("id", pokemonId);
-            // context.startActivity(intent);
-        });
-
-
-        // Anpassung der Anordnung der TextViews basierend auf der Anzahl der Spalten
+        // COLUMNS BUTTON - Anpassung der Anordnung der TextViews basierend auf der Anzahl der Spalten
         if (numberOfColumns == 1) {
             // Wenn es nur eine Spalte gibt, setze die TextViews nebeneinander und das Layout horizontal
             holder.textViewName.getLayoutParams().width = 0; // layout_width auf 0dp setzen
@@ -111,6 +103,16 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             holder.layoutChanged.setOrientation(LinearLayout.VERTICAL);
             holder.imageView.setAdjustViewBounds(true);
         }
+
+        // Von ListFragment zu PokemonFragment
+        holder.cardView.setOnClickListener(e -> {
+            // Bei einem Klick auf das CardView-Element in der RecyclerView wird dieser Listener aufgerufen.
+            // Hier wird die Position des geklickten Elements im RecyclerView-Adapter abgerufen und verwendet,
+            // um die entsprechende Pokemon-ID zu bestimmen.
+
+            int pokemonId = position + 1;
+            holder.openPokemonFragment(pokemonId); //Methode OpenPokemonFragment vom Holder wird aufgerufen mit der PokemonId
+        });
     }
 
 
@@ -127,7 +129,6 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
 
     // Definition ViewHolder Klasse
-
     public class ViewHolder extends RecyclerView.ViewHolder {
         ImageView imageView;
         TextView textViewID;
@@ -135,13 +136,23 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         LinearLayout layoutChanged;
         CardView cardView;
         public ViewHolder(@NonNull View itemView) {
-            super(itemView);
+            super(itemView); //super(itemView) sorgt dafür, dass die ViewHolder-Instanz ordnungsgemäß initialisiert wird, indem der Konstruktor der Elternklasse aufgerufen wird
+
             imageView = itemView.findViewById(R.id.list_pokemon_image); //Layout finden
             textViewName = itemView.findViewById(R.id.list_pokemon_name);
             textViewID = itemView.findViewById(R.id.list_pokemon_id);
             layoutChanged = itemView.findViewById(R.id.layoutchanged); // für Layout Orientation horizontal und vertikal
             cardView = itemView.findViewById(R.id.cardView); //Für den Onclick Listener
 
+        }
+
+        //Methode openPokemonFragment für ListFragment zu PokemonFragment
+        public void openPokemonFragment(int pokemonId) {
+            //Hier wird die Navigation zum PokemonFragment mit der übergebenen Pokemon-ID durchgeführt
+            NavController navController = Navigation.findNavController(itemView);
+            Bundle bundle = new Bundle();
+            bundle.putInt("pokemonId", pokemonId);
+            navController.navigate(R.id.action_listFragment_to_pokemonFragment, bundle);
         }
     }
 }

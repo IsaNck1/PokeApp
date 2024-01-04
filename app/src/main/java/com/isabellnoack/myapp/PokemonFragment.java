@@ -42,7 +42,7 @@ public class PokemonFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 NavHostFragment.findNavController(PokemonFragment.this)
-                        .navigate(R.id.action_FirstFragment_to_SecondFragment);
+                        .navigate(R.id.action_pokemonFragment_to_listFragment);
             }
         });
 

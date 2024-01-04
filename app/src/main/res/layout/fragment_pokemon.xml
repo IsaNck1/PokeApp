@@ -61,8 +61,7 @@
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:layout_gravity="center"
-            android:layout_marginTop="16dp"
-            android:background="@color/black"/>
+            android:layout_marginTop="16dp" />
 
 
     </LinearLayout>

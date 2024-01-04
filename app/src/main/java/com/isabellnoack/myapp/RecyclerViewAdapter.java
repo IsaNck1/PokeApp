@@ -123,7 +123,6 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     public int getItemCount() {
         return  1017;
         //return recyclerViewItems.size();
-
     }
 
 

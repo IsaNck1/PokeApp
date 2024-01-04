@@ -37,15 +37,6 @@ public class PokemonFragment extends Fragment {
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        //Button next page
-        binding.nextPageButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                NavHostFragment.findNavController(PokemonFragment.this)
-                        .navigate(R.id.action_pokemonFragment_to_listFragment);
-            }
-        });
-
         //Button NEXT POKEMON
         binding.nextPokemonButton.setOnClickListener((view1) -> {
             // laden des nächsten Pokemon

@@ -1,5 +1,7 @@
 package com.isabellnoack.myapp;
 
+import static com.isabellnoack.myapp.MainActivity.pokemonIdToOpen;
+
 import android.annotation.SuppressLint;
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -32,7 +34,7 @@ public class PokemonFragment extends Fragment {
 
     }
 
-    int pokemonId = 1;
+    int pokemonId = pokemonIdToOpen;
 
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);

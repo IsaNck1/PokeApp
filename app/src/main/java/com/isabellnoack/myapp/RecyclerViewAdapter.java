@@ -1,5 +1,7 @@
 package com.isabellnoack.myapp;
 
+import static com.isabellnoack.myapp.MainActivity.pokemonIdToOpen;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -110,8 +112,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             // Hier wird die Position des geklickten Elements im RecyclerView-Adapter abgerufen und verwendet,
             // um die entsprechende Pokemon-ID zu bestimmen.
 
-            int pokemonId = position + 1;
-            holder.openPokemonFragment(pokemonId); //Methode OpenPokemonFragment vom Holder wird aufgerufen mit der PokemonId
+            pokemonIdToOpen = position + 1;
+            holder.openPokemonFragment(pokemonIdToOpen); //Methode OpenPokemonFragment vom Holder wird aufgerufen mit dem int pokemonIdToOpen
         });
     }
 

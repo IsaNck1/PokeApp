@@ -43,7 +43,7 @@ public class PokemonFragment extends Fragment {
         //Button NEXT POKEMON
         binding.nextPokemonButton.setOnClickListener((view1) -> {
             // laden des nächsten Pokemon
-            if (pokemonId == 1017) { //1017 ist das letzte Pokemon
+            if (pokemonId == 1025) { //1017 ist das letzte Pokemon
                 pokemonId = 1;
             } else {
                 pokemonId++;
@@ -55,7 +55,7 @@ public class PokemonFragment extends Fragment {
         binding.previousPokemonButton.setOnClickListener((view1) -> {
             // laden des vorherigen Pokemon
             if (pokemonId == 1) {
-                pokemonId = 1017;
+                pokemonId = 1025;
             } else {
                 pokemonId--;
             }
@@ -105,18 +105,24 @@ public class PokemonFragment extends Fragment {
                             @Override
                             public void run() {
                                 try {
-                                    final Bitmap bitmap = PokeAPI.ImageLoader.loadImageFromUrl(pokemon.imageUrl);
+                                    if (pokemon.imageUrl != "") { //wenn Sprite null > in RecyclerViewItem übersprungen > Standard Wert ""
+                                        final Bitmap bitmap = PokeAPI.ImageLoader.loadImageFromUrl(pokemon.imageUrl);
+                                        getActivity().runOnUiThread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                binding.pokemonImage.setImageBitmap(bitmap);
+                                            }
+                                        });
 
-                                    getActivity().runOnUiThread(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            binding.pokemonImage.setImageBitmap(bitmap);
-                                        }
-                                    });
+                                    } else { //Hier statt "" dann empty.xml setzen
+                                        binding.pokemonImage.setImageResource(R.drawable.empty);
+                                    }
+
                                 } catch (IOException e) {
                                     e.printStackTrace(); //Fehlermeldung
                                 }
                             }
+
                         }).start();
                     } catch (Exception e) {
                         e.printStackTrace();

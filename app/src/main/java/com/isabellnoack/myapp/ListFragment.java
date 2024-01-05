@@ -1,5 +1,6 @@
 package com.isabellnoack.myapp;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -61,24 +62,14 @@ public class ListFragment extends Fragment {
         });
 
         Context context = view.getContext();
+        Activity activity = getActivity();
 
         new Thread(() -> {
 
             //Neue Array Liste aus RecyclerViewItem
             recyclerViewItems = new ArrayList<RecyclerViewItem>();
 
-            //Array Liste neues Item hinzufügen
-//            try {
-//                //Schleife, Listen-Eintrag für alle Pokemon ID von 1 bis 1017
-//                for (int id = 1; id <= 10; id++) {
-//                    recyclerViewItems.add(new RecyclerViewItem(id)); //Listen Eintrag
-//                }
-//                //To-Do: performantes laden!
-//
-//            } catch (IOException ignored) {
-//                // todo send warning to user
-//            }
-            getActivity().runOnUiThread(new Runnable() {
+            activity.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
 

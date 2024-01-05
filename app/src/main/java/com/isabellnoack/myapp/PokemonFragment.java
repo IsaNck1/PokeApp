@@ -3,6 +3,7 @@ package com.isabellnoack.myapp;
 import static com.isabellnoack.myapp.MainActivity.pokemonIdToOpen;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -71,10 +72,13 @@ public class PokemonFragment extends Fragment {
 
     void loadPokemon() {
         //Neuer Thread da Hauptthread nicht blockiert werden darf
+
+        Activity activity = getActivity();
+
         new Thread(() -> {
             try {
                 Pokemon pokemon = new PokeAPI().requestPokemon(pokemonId); //Funktion der neuen Instanz pokeAPI aufrufen
-                getActivity().runOnUiThread(() -> {
+                activity.runOnUiThread(() -> {
 
                     //UI Bindings
                     String name = pokemon.name;

@@ -74,13 +74,16 @@ public class PokemonFragment extends Fragment {
                 Pokemon pokemon = new PokeAPI().requestPokemon(pokemonId); //Funktion der neuen Instanz pokeAPI aufrufen
                 getActivity().runOnUiThread(() -> {
 
-                    //UI
+                    //UI Bindings
                     String name = pokemon.name;
                     name = Character.toUpperCase(name.charAt(0)) + name.substring(1); //Erster Character groß geschrieben :(
                     binding.pokemonName.setText("Name: " + name);
-                    binding.pokemonExperience.setText("Experience: " + pokemon.baseExperience);
+                    if (pokemon.baseExperience != 0) {
+                        binding.pokemonExperience.setText("Experience: " + pokemon.baseExperience);
+                    } else {
+                        binding.pokemonExperience.setText("Experience: undefined");
+                    }
                     binding.pokemonId.setText("ID: " + pokemonId);
-
 
                     // Bild laden und in ImageView setzen
                     //try {

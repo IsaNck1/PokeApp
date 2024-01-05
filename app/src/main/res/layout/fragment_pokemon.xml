@@ -19,22 +19,23 @@
             android:layout_marginBottom="10dp">
 
             <Button
-                android:id="@+id/next_pokemon_button"
+                android:id="@+id/previous_pokemon_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:text="Next Pokémon" />
+                android:text="Previous Pokémon" />
 
             <Space
                 android:layout_width="8dp"
                 android:layout_height="wrap_content" />
 
             <Button
-                android:id="@+id/previous_pokemon_button"
+                android:id="@+id/next_pokemon_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:text="Previous Pokémon" />
+                android:text="Next Pokémon" />
+
 
         </LinearLayout>
 

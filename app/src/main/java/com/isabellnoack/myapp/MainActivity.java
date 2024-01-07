@@ -67,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
             return true;
         }
 
-        return super.onOptionsItemSelected(item);
+        return super.onOptionsItemSelected(item); //super: hier Aufruf der Methode der Elternklasse(super ist Elternklasse)
     }
 
     @Override

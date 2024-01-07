@@ -1,11 +1,16 @@
 package com.isabellnoack.myapp;
 
+import static com.isabellnoack.myapp.MainActivity.pokemonIdToOpen;
+
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -28,13 +33,20 @@ public class ListFragment extends Fragment {
             Bundle savedInstanceState
     ) {
 
+        //Layout erstellen/ inflaten
         binding = FragmentListBinding.inflate(inflater, container, false);
+
+
         return binding.getRoot();
 
     }
 
+
+
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+
 
         //Button PREVIOUS PAGE
         binding.buttonSecond.setOnClickListener(new View.OnClickListener() {
@@ -92,12 +104,15 @@ public class ListFragment extends Fragment {
 
     // Methode zur Aktualisierung der RecyclerView mit der neuen Anzahl von Spalten
     private void updateRecyclerView() {
-        GridLayoutManager layoutManager = new GridLayoutManager(getContext(), numberOfColumns);
-        binding.recyclerView.setLayoutManager(layoutManager);
-
         // Adapter für die RecyclerView erneut setzen
         RecyclerViewAdapter recyclerViewAdapter = new RecyclerViewAdapter(getContext(), numberOfColumns, getActivity());
         binding.recyclerView.setAdapter(recyclerViewAdapter);
+
+        GridLayoutManager layoutManager = new GridLayoutManager(getContext(), numberOfColumns);
+        binding.recyclerView.setLayoutManager(layoutManager);
+
+        //Zu Item scrollen - funktioniert nicht
+        //layoutManager.scrollToPosition(pokemonIdToOpen);
     }
 
     @Override

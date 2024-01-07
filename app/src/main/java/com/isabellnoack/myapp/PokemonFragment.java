@@ -45,8 +45,10 @@ public class PokemonFragment extends Fragment {
             // laden des nächsten Pokemon
             if (pokemonId == 1025) { //1017 ist das letzte Pokemon
                 pokemonId = 1;
+                pokemonIdToOpen = 1;
             } else {
                 pokemonId++;
+                pokemonIdToOpen++;
             }
             loadPokemon();
         });
@@ -56,8 +58,10 @@ public class PokemonFragment extends Fragment {
             // laden des vorherigen Pokemon
             if (pokemonId == 1) {
                 pokemonId = 1025;
+                pokemonIdToOpen = 1025;
             } else {
                 pokemonId--;
+                pokemonIdToOpen--;
             }
 
             loadPokemon();

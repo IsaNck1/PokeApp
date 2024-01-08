@@ -108,6 +108,39 @@ public class PokeAPI {
                     }
                     reader.endObject();
                     break;
+
+
+                case "weight":
+                    if (reader.peek() == JsonToken.NUMBER) {
+                        pokemon.weight = reader.nextInt();
+                    } else reader.skipValue();
+                    break;
+
+                case "height":
+                    if (reader.peek() == JsonToken.NUMBER) {
+                        pokemon.height = reader.nextInt();
+                    } else reader.skipValue();
+                    break;
+
+                case "types":
+                    reader.beginArray();
+                    while (reader.hasNext()) {
+                        reader.beginObject();
+                        while (reader.hasNext()) {
+                            switch (reader.nextName()) {
+                                case "type":
+                                    pokemon.types.add(readNameWithURL(reader));
+                                    break;
+                                default:
+                                    reader.skipValue();
+                            }
+                        }
+                        reader.endObject();
+                    }
+                    reader.endArray();
+                    break;
+
+
                 default:
                     reader.skipValue();
             }

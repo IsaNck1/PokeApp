@@ -45,7 +45,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="16dp"
-            android:text="ID: 1" />
+            android:text="ID:" />
 
         <TextView
             android:id="@+id/pokemon_name"
@@ -53,22 +53,38 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="16dp"
-            android:text="Name: Bulbasaur" />
+            android:text="Name:" />
+
+        <ImageView
+            android:id="@+id/pokemon_image"
+            android:layout_width="250dp"
+            android:layout_height="250dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="16dp" />
 
         <TextView
-            android:id="@+id/pokemon_experience"
+            android:id="@+id/pokemon_height"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="16dp"
-            android:text="Experience: 10" />
+            android:text="Height: " />
 
-        <ImageView
-            android:id="@+id/pokemon_image"
-            android:layout_width="200dp"
-            android:layout_height="200dp"
+        <TextView
+            android:id="@+id/pokemon_weight"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginTop="16dp" />
+            android:layout_marginTop="16dp"
+            android:text="Weight:" />
+
+        <TextView
+            android:id="@+id/pokemon_types"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="16dp"
+            android:text="Types:" />
 
 
     </LinearLayout>

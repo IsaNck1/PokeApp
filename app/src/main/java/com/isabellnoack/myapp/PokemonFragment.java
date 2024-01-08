@@ -85,14 +85,10 @@ public class PokemonFragment extends Fragment {
                 activity.runOnUiThread(() -> {
 
                     //UI Bindings
-                    String name = pokemon.name;
-                    name = Character.toUpperCase(name.charAt(0)) + name.substring(1); //Erster Character groß geschrieben :(
+                    String name = pokemon.name; //Ersten Character groß schreiben
+                    name = Character.toUpperCase(name.charAt(0)) + name.substring(1);
                     binding.pokemonName.setText("Name: " + name);
-                    if (pokemon.baseExperience != 0) {
-                        binding.pokemonExperience.setText("Experience: " + pokemon.baseExperience);
-                    } else {
-                        binding.pokemonExperience.setText("Experience: undefined");
-                    }
+
                     binding.pokemonId.setText("ID: " + pokemonId);
 
                     // Bild laden und in ImageView setzen
@@ -131,6 +127,20 @@ public class PokemonFragment extends Fragment {
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
+
+                    if (pokemon.weight != 0) {
+                        binding.pokemonWeight.setText("Weight: " + (pokemon.weight / 10.0f) + " kg"); //Angabe in Hectogramm // ausserdem mit float multiliziert, für Kommastellen
+                    } else {
+                        binding.pokemonWeight.setText("Weight: undefined");
+                    }
+
+                    if (pokemon.height != 0) {
+                        binding.pokemonHeight.setText("Height: " + (pokemon.height / 10.0f) + " m"); //Angabe in Decimeter
+                    } else {
+                        binding.pokemonHeight.setText("Weight: undefined");
+                    }
+
+                    binding.pokemonTypes.setText("Types: " + pokemon.types);
 
                 });
             } catch (IOException ignored) {

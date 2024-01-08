@@ -46,7 +46,8 @@ public class ListFragment extends Fragment {
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-
+        //Zu Item scrollen - funktioniert nicht
+        //binding.recyclerView.scrollToPosition(pokemonIdToOpen);
 
         //Button PREVIOUS PAGE
         binding.buttonSecond.setOnClickListener(new View.OnClickListener() {
@@ -111,8 +112,6 @@ public class ListFragment extends Fragment {
         GridLayoutManager layoutManager = new GridLayoutManager(getContext(), numberOfColumns);
         binding.recyclerView.setLayoutManager(layoutManager);
 
-        //Zu Item scrollen - funktioniert nicht
-        //layoutManager.scrollToPosition(pokemonIdToOpen);
     }
 
     @Override

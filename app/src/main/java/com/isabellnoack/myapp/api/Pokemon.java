@@ -15,7 +15,7 @@ public class Pokemon {
     public ArrayList<NameWithURL> types = new ArrayList<>();
 
 
-   //magic mit: funktion löschen, "tostring" hier drunter eingeben, und enter (generate via wizard)
+   //wizard magic mit: funktion löschen, "tostring" hier drunter eingeben, und enter (generate via wizard)
 
     @Override
     public String toString() {

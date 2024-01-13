@@ -27,7 +27,5 @@ public class RecyclerViewItem {
         if (pokemon.imageUrl != "") {
             this.image = PokeAPI.ImageLoader.loadImageFromUrl(pokemon.imageUrl);
         }
-
-
     }
 }

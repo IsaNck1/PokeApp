@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -91,10 +92,10 @@ public class PokemonFragment extends Fragment {
 
         Activity activity = getActivity();
 
-        new Thread(() -> {
+        new Thread(() -> { //Download Thread
             try {
                 Pokemon pokemon = new PokeAPI().requestPokemon(pokemonId); //Funktion der neuen Instanz pokeAPI aufrufen
-                activity.runOnUiThread(() -> {
+                activity.runOnUiThread(() -> { //UI Thread
 
                     //UI Bindings
                     binding.pokemonName.setText("Name: " + capitalize(pokemon.name));
@@ -163,8 +164,11 @@ public class PokemonFragment extends Fragment {
                     binding.pokemonTypes.setText("Types: " + types);
 
                 });
-            } catch (IOException ignored) {
-                // todo send warning to user
+            } catch (IOException exception) { //Hier im Download Thread, um etwas anzeigen zu können in den UI Thread wechseln
+                activity.runOnUiThread(() -> { //jetzt auf UI Thread
+                    // send warning to user
+                    Toast.makeText(activity, exception.toString(), Toast.LENGTH_LONG).show(); //Toast Klasse mit: context(so anzeigen: activity ; Fehler als String anzeigen; Wie lange angezeigt)
+                });
             }
         }).start();
     }

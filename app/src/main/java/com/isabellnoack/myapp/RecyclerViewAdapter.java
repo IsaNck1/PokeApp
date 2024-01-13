@@ -2,6 +2,7 @@ package com.isabellnoack.myapp;
 
 import static com.isabellnoack.myapp.MainActivity.pokemonIdToOpen;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -16,6 +17,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
@@ -34,16 +36,14 @@ import java.util.HashMap;
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> {
 //Adapter als Übersetzer von der RecyclingView zu meinen Daten und zu Layout
 
-    private Context context; //
-    private int numberOfColumns; // NEU: Variable für die Anzahl der Spalten hinzufügen
+    private final int numberOfColumns; // NEU: Variable für die Anzahl der Spalten hinzufügen
 
-    private Activity activity;
+    private final Activity activity;
 
     //Konstruktor initialisiert die Klassenvariablen mit den übergebenen Werten
-    public RecyclerViewAdapter(Context context, int numberOfColumns, Activity activity) {
-        this.context = context;
+    public RecyclerViewAdapter(int numberOfColumns, Activity activity) {
         this.numberOfColumns = numberOfColumns; // NEU: Anzahl der Spalten setzen
-        this.activity = activity;
+        this.activity = activity; //Für Toast anzeigen und für RunOnUIThread (Thread wechseln)
     }
 
     @NonNull
@@ -53,7 +53,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     // Funktion wird aufgerufen um neuen ViewHolder zu erstellen. Die Funktion erstellt eine Ansicht (View) durch Aufblasen (inflate) des Layouts recyclerview_item
     // ViewHolder (mit View) wird zurück gegeben (anhand der ViewHolder Klasse die unten definiert wurde)
     public RecyclerViewAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.recyclerview_item,parent,false); //View anhand des Layouts in meinen Ressourcen
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.recyclerview_item, parent, false); //View anhand des Layouts in meinen Ressourcen
         return new ViewHolder(view);
     }
 
@@ -63,27 +63,27 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
         int id = position + 1;
 
-        Thread t = new Thread(() -> {
+        @SuppressLint("SetTextI18n") Thread t = new Thread(() -> {
             try {
                 final RecyclerViewItem item = new RecyclerViewItem(id);
-                activity.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
+                activity.runOnUiThread(() -> {
 
-                        //holder.imageView.setImageURI(Uri.parse(item.pokemon.imageUrl));
-                        if (item.image != null) {
-                            holder.imageView.setImageBitmap(item.image);
-                        } else {
-                            holder.imageView.setImageResource(R.drawable.empty);
-                        }
-
-                        holder.textViewID.setText("ID: " + item.id.toString()); //Sting mit "ID:" + ID
-                        holder.textViewName.setText(item.name);
+                    //holder.imageView.setImageURI(Uri.parse(item.pokemon.imageUrl));
+                    if (item.image != null) {
+                        holder.imageView.setImageBitmap(item.image);
+                    } else {
+                        holder.imageView.setImageResource(R.drawable.empty);
                     }
-                });
 
-            } catch (IOException e) {
-                throw new RuntimeException(e);
+                    holder.textViewID.setText("ID: " + item.id.toString()); //Sting mit "ID:" + ID
+                    holder.textViewName.setText(item.name);
+                });
+            } catch (
+                    IOException exception) { //Hier im Download Thread, um etwas anzeigen zu können in den UI Thread wechseln
+                activity.runOnUiThread(() -> { //jetzt auf UI Thread
+                    // send warning to user
+                    Toast.makeText(activity, exception.toString(), Toast.LENGTH_LONG).show(); //Toast Klasse mit: context(so anzeigen: activity ; Fehler als String anzeigen; Wie lange angezeigt)
+                });
             }
         });
 
@@ -118,25 +118,22 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     }
 
 
-
-
-
-
     // Grösse der Liste
     @Override
     public int getItemCount() {
-        return  1025;
+        return 1025;
         //return recyclerViewItems.size();
     }
 
 
     // Definition ViewHolder Klasse
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    public static class ViewHolder extends RecyclerView.ViewHolder {
         ImageView imageView;
         TextView textViewID;
         TextView textViewName;
         LinearLayout layoutChanged;
         CardView cardView;
+
         public ViewHolder(@NonNull View itemView) {
             super(itemView); //super(itemView) sorgt dafür, dass die ViewHolder-Instanz ordnungsgemäß initialisiert wird, indem der Konstruktor der Elternklasse aufgerufen wird
 

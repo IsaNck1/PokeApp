@@ -1,16 +1,11 @@
 package com.isabellnoack.myapp;
 
-import static com.isabellnoack.myapp.MainActivity.pokemonIdToOpen;
-
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -42,7 +37,6 @@ public class ListFragment extends Fragment {
     }
 
 
-
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
@@ -66,7 +60,7 @@ public class ListFragment extends Fragment {
             public void onClick(View view) {
                 if (numberOfColumns == 3) {
                     numberOfColumns = 1;
-                } else  {
+                } else {
                     numberOfColumns++;
                 }
                 updateRecyclerView();
@@ -74,30 +68,28 @@ public class ListFragment extends Fragment {
 
         });
 
-        Context context = view.getContext();
-        Activity activity = getActivity();
+        Context context = view.getContext(); //für GridlayoutManager-Erstellung
+        Activity activity = getActivity(); //für RecyclerViewAdapter-Instanz
 
         new Thread(() -> {
 
             //Neue Array Liste aus RecyclerViewItem
             recyclerViewItems = new ArrayList<RecyclerViewItem>();
 
-            activity.runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
+            assert activity != null;
+            activity.runOnUiThread(() -> {
 
-                    //set Fixed Size
-                    binding.recyclerView.setHasFixedSize(true);
+                //set Fixed Size
+                binding.recyclerView.setHasFixedSize(true);
 
-                    //Hier wird der GridLayoutManager mit 1,2 oder 3 Spalten erstellt
-                    //int numberOfColumns = 2;
-                    GridLayoutManager layoutManager = new GridLayoutManager(context, numberOfColumns);
-                    binding.recyclerView.setLayoutManager(layoutManager);
+                //Hier wird der GridLayoutManager mit 1,2 oder 3 Spalten erstellt
+                //int numberOfColumns = 2;
+                GridLayoutManager layoutManager = new GridLayoutManager(context, numberOfColumns);
+                binding.recyclerView.setLayoutManager(layoutManager);
 
-                    //Hier wird der Adapter für die RecyclerView gesetzt (Alle Variablen werden übergeben: recyclerViewItems,context,numberOfColumns)
-                    RecyclerViewAdapter recyclerViewAdapter = new RecyclerViewAdapter(context, numberOfColumns, getActivity());
-                    binding.recyclerView.setAdapter(recyclerViewAdapter);
-                }
+                //Hier wird der Adapter für die RecyclerView gesetzt (Alle Variablen werden übergeben: recyclerViewItems,context,numberOfColumns)
+                RecyclerViewAdapter recyclerViewAdapter = new RecyclerViewAdapter(numberOfColumns, getActivity());
+                binding.recyclerView.setAdapter(recyclerViewAdapter);
             });
         }).start();
 
@@ -106,7 +98,7 @@ public class ListFragment extends Fragment {
     // Methode zur Aktualisierung der RecyclerView mit der neuen Anzahl von Spalten
     private void updateRecyclerView() {
         // Adapter für die RecyclerView erneut setzen
-        RecyclerViewAdapter recyclerViewAdapter = new RecyclerViewAdapter(getContext(), numberOfColumns, getActivity());
+        RecyclerViewAdapter recyclerViewAdapter = new RecyclerViewAdapter(numberOfColumns, getActivity());
         binding.recyclerView.setAdapter(recyclerViewAdapter);
 
         GridLayoutManager layoutManager = new GridLayoutManager(getContext(), numberOfColumns);

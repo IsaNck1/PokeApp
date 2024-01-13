@@ -14,8 +14,11 @@ public class Pokemon {
     public int weight = 0;
     public ArrayList<NameWithURL> types = new ArrayList<>();
 
+    public ArrayList<Ability> abilities = new ArrayList<>();
 
-   //wizard magic mit: funktion löschen, "tostring" hier drunter eingeben, und enter (generate via wizard)
+
+    //wizard magic mit: funktion löschen, "tostring" hier drunter eingeben, und enter (generate via wizard)
+    // toString() Funktion generieren ("print-debugging")
 
     @Override
     public String toString() {

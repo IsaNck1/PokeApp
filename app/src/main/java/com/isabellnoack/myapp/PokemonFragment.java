@@ -14,6 +14,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
+import com.isabellnoack.myapp.api.Ability;
 import com.isabellnoack.myapp.api.NameWithURL;
 import com.isabellnoack.myapp.api.PokeAPI;
 import com.isabellnoack.myapp.api.Pokemon;
@@ -76,7 +77,7 @@ public class PokemonFragment extends Fragment {
 
     /**
      * Ersten Character groß schreiben
-     * */
+     */
     String capitalize(String name) {
         name = Character.toUpperCase(name.charAt(0)) + name.substring(1);
         return name;
@@ -163,8 +164,31 @@ public class PokemonFragment extends Fragment {
                     }
                     binding.pokemonTypes.setText("Types: " + types);
 
+                    //pokemon.abilities, nur name aus dem array ausgeben, und nach hidden filtern
+                    String abilities = "none";
+                    int numberOfAbilities = 0;
+                    for (Ability ability : pokemon.abilities) {
+                        NameWithURL nameWithURL = ability.nameWithURL;
+                        if (ability.isHidden) {
+                            continue; //macht mit dem for weiter, und ignoriert damit die Ability wenn isHidden true
+                        }
+                        //for (Typ variablen-name : Datenquelle)
+                        numberOfAbilities++;
+                        if (abilities.equals("none")) {
+                            abilities = capitalize(nameWithURL.name);
+                        } else {
+                            abilities = abilities + ", " + capitalize(nameWithURL.name);
+                        }
+                    }
+                    if (numberOfAbilities == 1) {
+                        binding.pokemonAbilities.setText("Ability: " + abilities);
+                    } else {
+                        binding.pokemonAbilities.setText("Abilities: " + abilities);
+                    }
+                    
                 });
-            } catch (IOException exception) { //Hier im Download Thread, um etwas anzeigen zu können in den UI Thread wechseln
+            } catch (
+                    IOException exception) { //Hier im Download Thread, um etwas anzeigen zu können in den UI Thread wechseln
                 activity.runOnUiThread(() -> { //jetzt auf UI Thread
                     // send warning to user
                     Toast.makeText(activity, exception.toString(), Toast.LENGTH_LONG).show(); //Toast Klasse mit: context(so anzeigen: activity ; Fehler als String anzeigen; Wie lange angezeigt)

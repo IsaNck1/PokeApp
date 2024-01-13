@@ -87,7 +87,7 @@ public class PokeAPI {
                                                 switch (reader.nextName()) {
                                                     case "front_default":
                                                         if (reader.peek() == JsonToken.STRING) {
-                                                        pokemon.imageUrl = reader.nextString();
+                                                            pokemon.imageUrl = reader.nextString();
                                                         } else reader.skipValue();
                                                         break; // Weil ganz unten, bitte verlasse das switch
                                                     default:
@@ -140,6 +140,14 @@ public class PokeAPI {
                     reader.endArray();
                     break;
 
+                case "abilities":
+                    reader.beginArray();
+                    while (reader.hasNext()) {
+                        pokemon.abilities.add(readAbility(reader));
+                    }
+                    reader.endArray();
+                    break;
+
 
                 default:
                     reader.skipValue();
@@ -147,6 +155,25 @@ public class PokeAPI {
         }
         reader.endObject();
         return pokemon;
+    }
+
+    Ability readAbility(JsonReader reader) throws IOException { //Rückgabewert Ability
+        Ability ability = new Ability();
+        reader.beginObject();
+        while (reader.hasNext()) {
+            switch (reader.nextName()) {
+                case "ability":
+                    ability.nameWithURL = readNameWithURL(reader);
+                    break;
+                case "is_hidden":
+                    ability.isHidden = reader.nextBoolean();
+                    break;
+                default:
+                    reader.skipValue();
+            }
+        }
+        reader.endObject();
+        return ability;
     }
 
     Berry readBerry(JsonReader reader) throws IOException {

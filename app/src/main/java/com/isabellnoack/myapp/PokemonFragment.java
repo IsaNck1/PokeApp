@@ -12,8 +12,8 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.navigation.fragment.NavHostFragment;
 
+import com.isabellnoack.myapp.api.NameWithURL;
 import com.isabellnoack.myapp.api.PokeAPI;
 import com.isabellnoack.myapp.api.Pokemon;
 import com.isabellnoack.myapp.databinding.FragmentPokemonBinding;
@@ -23,6 +23,7 @@ import java.io.IOException;
 public class PokemonFragment extends Fragment {
 
     private FragmentPokemonBinding binding;
+
     @Override
     public View onCreateView(
             LayoutInflater inflater, ViewGroup container,
@@ -72,8 +73,19 @@ public class PokemonFragment extends Fragment {
 
     }
 
-    @SuppressLint("SetTextI18n") //Nicht highlighten
+    /**
+     * Ersten Character groß schreiben
+     * */
+    String capitalize(String name) {
+        name = Character.toUpperCase(name.charAt(0)) + name.substring(1);
+        return name;
+    }
 
+    /**
+     * @noinspection StringConcatenationInLoop
+     */
+    @SuppressLint("SetTextI18n")
+    //Nicht highlighten
     void loadPokemon() {
         //Neuer Thread da Hauptthread nicht blockiert werden darf
 
@@ -85,9 +97,7 @@ public class PokemonFragment extends Fragment {
                 activity.runOnUiThread(() -> {
 
                     //UI Bindings
-                    String name = pokemon.name; //Ersten Character groß schreiben
-                    name = Character.toUpperCase(name.charAt(0)) + name.substring(1);
-                    binding.pokemonName.setText("Name: " + name);
+                    binding.pokemonName.setText("Name: " + capitalize(pokemon.name));
 
                     binding.pokemonId.setText("ID: " + pokemonId);
 
@@ -140,7 +150,17 @@ public class PokemonFragment extends Fragment {
                         binding.pokemonHeight.setText("Weight: undefined");
                     }
 
-                    binding.pokemonTypes.setText("Types: " + pokemon.types);
+                    //pokemon.types, nur name aus dem array ausgeben
+                    String types = "none";
+                    for (NameWithURL type : pokemon.types) {
+                        //for (Typ variablen-name : Datenquelle)
+                        if (types.equals("none")) {
+                            types = capitalize(type.name);                  //Wert überschreiben mit Pokemon Type
+                        } else {
+                            types = types + ", " + capitalize(type.name);   //Pokemon Type anhängen
+                        }
+                    }
+                    binding.pokemonTypes.setText("Types: " + types);
 
                 });
             } catch (IOException ignored) {
@@ -148,6 +168,7 @@ public class PokemonFragment extends Fragment {
             }
         }).start();
     }
+
     @Override
     public void onDestroyView() {
         super.onDestroyView();

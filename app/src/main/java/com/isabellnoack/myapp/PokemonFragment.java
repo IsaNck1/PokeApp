@@ -2,6 +2,7 @@ package com.isabellnoack.myapp;
 
 import static com.isabellnoack.myapp.MainActivity.pokemonIdToOpen;
 
+import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
@@ -221,15 +222,15 @@ public class PokemonFragment extends Fragment implements SensorEventListener {
 
 
     //Sensor
-    private static final float SHAKE_THRESHOLD = 30.0f; //g Beschleunigung
+    private static final float SHAKE_THRESHOLD = 20.0f; //g Beschleunigung
     private long lastShakeTime;
 
 
     @Override
     public void onSensorChanged(SensorEvent event) {
-        if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
-            binding.sensor.setText("X: " + event.values[0] + ", Y: " + event.values[1] + ", Z: " + event.values[2]);
-        }
+//        if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
+//            binding.sensor.setText("X: " + event.values[0] + ", Y: " + event.values[1] + ", Z: " + event.values[2]);
+//        }
 
         if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
             // Beschleunigungssensors Werte
@@ -259,7 +260,17 @@ public class PokemonFragment extends Fragment implements SensorEventListener {
 
     //Schütteln erkannt
     private void onShakeDetected() {
+        //Toast Nachricht
         Toast.makeText(getActivity(), "Shake Detected!", Toast.LENGTH_SHORT).show();
+
+        //360 Rotation
+        //ObjectAnimator rotationAnimator = ObjectAnimator.ofFloat(binding.pokemonImage, "rotation", 0f, 720f);
+
+        //Hin und Her Rotation
+        ObjectAnimator rotationAnimator = ObjectAnimator.ofFloat(binding.pokemonImage, "rotation", 0f, -20f, 20f, -20f, 0f);
+        rotationAnimator.setDuration(1000);
+        rotationAnimator.start();
+
     }
 
     @Override

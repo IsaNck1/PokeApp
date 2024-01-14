@@ -24,6 +24,7 @@ import com.isabellnoack.myapp.api.Ability;
 import com.isabellnoack.myapp.api.NameWithURL;
 import com.isabellnoack.myapp.api.PokeAPI;
 import com.isabellnoack.myapp.api.Pokemon;
+import com.isabellnoack.myapp.api.PokemonSpecies;
 import com.isabellnoack.myapp.databinding.FragmentPokemonBinding;
 
 import java.io.IOException;
@@ -46,7 +47,8 @@ public class PokemonFragment extends Fragment implements SensorEventListener {
             SensorManager sensorManager = (SensorManager) getActivity().getSystemService(Context.SENSOR_SERVICE); //getActivity gibt mir die Main Activity zurück, damit hat man auf vieles Zugriff
             Sensor sensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
             sensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_NORMAL);
-        } catch (NullPointerException ignored) { //wenn NullPointerException d.h. Sensoren nicht gegeben, dann passiert einfach nichts
+        } catch (
+                NullPointerException ignored) { //wenn NullPointerException d.h. Sensoren nicht gegeben, dann passiert einfach nichts
         }
 
         //Layout Inflater
@@ -63,7 +65,7 @@ public class PokemonFragment extends Fragment implements SensorEventListener {
         //Button NEXT POKEMON
         binding.nextPokemonButton.setOnClickListener((view1) -> {
             // laden des nächsten Pokemon
-            if (pokemonId == 1025) { //1017 ist das letzte Pokemon
+            if (pokemonId == 1025) { //1025 ist das letzte Pokemon
                 pokemonId = 1;
                 pokemonIdToOpen = 1;
             } else {
@@ -71,6 +73,7 @@ public class PokemonFragment extends Fragment implements SensorEventListener {
                 pokemonIdToOpen++;
             }
             loadPokemon();
+            loadPokemonSpecies();
         });
 
         //Button PREVIOUS POKEMON
@@ -85,10 +88,13 @@ public class PokemonFragment extends Fragment implements SensorEventListener {
             }
 
             loadPokemon();
+            loadPokemonSpecies();
         });
 
         // Pokemon anhand ID wird geladen
         loadPokemon();
+        // PokemonSpecies anhand ID wird geladen
+        loadPokemonSpecies();
 
     }
 
@@ -104,7 +110,8 @@ public class PokemonFragment extends Fragment implements SensorEventListener {
      * @noinspection StringConcatenationInLoop
      */
     @SuppressLint("SetTextI18n")
-    //Nicht highlighten
+    //Hard Coded Text nicht highlighten
+
     void loadPokemon() {
         //Neuer Thread da Hauptthread nicht blockiert werden darf
 
@@ -213,6 +220,29 @@ public class PokemonFragment extends Fragment implements SensorEventListener {
             }
         }).start();
     }
+
+
+    void loadPokemonSpecies() {
+        Activity activity = getActivity();
+
+        new Thread(() -> {
+            try {
+                PokemonSpecies pokemonSpecies = new PokeAPI().requestPokemonSpecies(pokemonId); //Funktion der neuen Instanz pokeAPI aufrufen
+                activity.runOnUiThread(() -> { //UI Thread
+
+                    //UI Bindings
+                    binding.pokemonSpeciesName.setText("Species: " + capitalize(pokemonSpecies.name));
+
+                });
+            } catch (
+                    IOException exception) { //Hier im Download Thread, um etwas anzeigen zu können in den UI Thread wechseln
+                activity.runOnUiThread(() -> { //jetzt auf UI Thread
+                    Toast.makeText(activity, exception.toString(), Toast.LENGTH_LONG).show(); //Toast Klasse mit: context(so anzeigen: activity ; Fehler als String anzeigen; Wie lange angezeigt)
+                });
+            }
+        }).start();
+    }
+
 
     @Override
     public void onDestroyView() {

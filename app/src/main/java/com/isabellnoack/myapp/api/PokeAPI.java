@@ -26,6 +26,13 @@ public class PokeAPI {
         return readPokemon(reader); //Funktion für JSON in Pokemon Instanz
     }
 
+    public PokemonSpecies requestPokemonSpecies(int id) throws IOException {
+        String url = "https://pokeapi.co/api/v2/pokemon-species/" + id; //Datenquelle
+        JsonReader reader;
+        reader = requestJsonReader(url); //Interpretiert Text aus Internet als JSON
+        return readPokemonSpecies(reader); //Funktion für JSON in Pokemon Instanz
+    }
+
     //2
     JsonReader requestJsonReader(String url) throws IOException { //JSON lesen
         HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
@@ -222,6 +229,22 @@ public class PokeAPI {
         }
         reader.endObject();
         return flavorWithPotency;
+    }
+
+    PokemonSpecies readPokemonSpecies(JsonReader reader) throws IOException {
+        PokemonSpecies pokemonSpecies = new PokemonSpecies();
+        reader.beginObject();
+        while (reader.hasNext()) {
+            switch (reader.nextName()) {
+                case "name":
+                    pokemonSpecies.name = reader.nextString(); //Formatierung: Strg+Alt+O Strg+Alt+L
+                    break;
+                default:
+                    reader.skipValue();
+            }
+        }
+        reader.endObject();
+        return pokemonSpecies;
     }
 
     NameWithURL readNameWithURL(JsonReader reader) throws IOException {

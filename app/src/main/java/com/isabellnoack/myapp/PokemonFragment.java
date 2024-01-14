@@ -261,7 +261,7 @@ public class PokemonFragment extends Fragment implements SensorEventListener {
     //Schütteln erkannt
     private void onShakeDetected() {
         //Toast Nachricht
-        Toast.makeText(getActivity(), "Shake Detected!", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(getActivity(), "Shake Detected!", Toast.LENGTH_SHORT).show();
 
         //360 Rotation
         //ObjectAnimator rotationAnimator = ObjectAnimator.ofFloat(binding.pokemonImage, "rotation", 0f, 720f);

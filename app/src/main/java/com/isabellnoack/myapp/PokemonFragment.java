@@ -4,7 +4,12 @@ import static com.isabellnoack.myapp.MainActivity.pokemonIdToOpen;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.Context;
 import android.graphics.Bitmap;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,20 +27,31 @@ import com.isabellnoack.myapp.databinding.FragmentPokemonBinding;
 
 import java.io.IOException;
 
-public class PokemonFragment extends Fragment {
+@SuppressLint("SetTextI18n") //Hard Coded Text (Warnung ignorieren)
+
+public class PokemonFragment extends Fragment implements SensorEventListener {
 
     private FragmentPokemonBinding binding;
 
     @Override
     public View onCreateView(
+            //Layout Inflater
             LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState
     ) {
 
+        //Sensor
+        try {
+            SensorManager sensorManager = (SensorManager) getActivity().getSystemService(Context.SENSOR_SERVICE); //getActivity gibt mir die Main Activity zurück, damit hat man auf vieles Zugriff
+            Sensor sensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+            sensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_NORMAL);
+        } catch (NullPointerException ignored) { //wenn NullPointerException d.h. Sensoren nicht gegeben, dann passiert einfach nichts
+        }
+
+        //Layout Inflater
         binding = FragmentPokemonBinding.inflate(inflater, container, false);
 
         return binding.getRoot();
-
     }
 
     int pokemonId = pokemonIdToOpen;
@@ -185,7 +201,7 @@ public class PokemonFragment extends Fragment {
                     } else {
                         binding.pokemonAbilities.setText("Abilities: " + abilities);
                     }
-                    
+
                 });
             } catch (
                     IOException exception) { //Hier im Download Thread, um etwas anzeigen zu können in den UI Thread wechseln
@@ -203,4 +219,51 @@ public class PokemonFragment extends Fragment {
         binding = null;
     }
 
+
+    //Sensor
+    private static final float SHAKE_THRESHOLD = 30.0f; //g Beschleunigung
+    private long lastShakeTime;
+
+
+    @Override
+    public void onSensorChanged(SensorEvent event) {
+        if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
+            binding.sensor.setText("X: " + event.values[0] + ", Y: " + event.values[1] + ", Z: " + event.values[2]);
+        }
+
+        if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
+            // Beschleunigungssensors Werte
+            float x = event.values[0];
+            float y = event.values[1];
+            float z = event.values[2];
+
+            // Absolute Beschleunigung berechnen (Betrag der Differenz zur Erdbeschleunigung)
+            // .abs = absoluter Betrag: heißt es geht in + oder -
+            float acceleration = Math.abs(x) + Math.abs(y) + Math.abs(z) - (SensorManager.GRAVITY_EARTH); //Gravitation 9,81 m/s², auf Z wenn es flach auf Tisch liegt
+
+            // Die aktuelle Zeit in Millisekunden
+            long currentTime = System.currentTimeMillis();
+
+            // Überprüfe, ob die absolute Beschleunigung den Schwellenwert für ein Schütteln überschreitet
+            if (acceleration > SHAKE_THRESHOLD) {
+
+                // Cool-Down: Überprüfe, ob seit dem letzten Schütteln eine bestimmte Zeit vergangen ist
+                if (currentTime > lastShakeTime + 1000) {       //Momentane Zeit ist größer als letzteShake Zeit + 1sek
+                    onShakeDetected();                          //Wenn ja, wird Methode aufgerufen
+                    lastShakeTime = currentTime;
+                }
+            }
+        }
+
+    }
+
+    //Schütteln erkannt
+    private void onShakeDetected() {
+        Toast.makeText(getActivity(), "Shake Detected!", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
+
+    }
 }

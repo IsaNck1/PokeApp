@@ -20,7 +20,8 @@
             android:id="@+id/button_second"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Pokémon" />
+            android:text="Pokémon"
+            android:textSize="@dimen/button_size"/>
 
         <Space
             android:layout_width="8dp"
@@ -30,7 +31,8 @@
             android:id="@+id/button_numberOfColumns"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Columns" />
+            android:text="Columns"
+            android:textSize="@dimen/button_size"/>
 
     </LinearLayout>
 

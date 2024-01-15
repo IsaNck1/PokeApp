@@ -29,7 +29,6 @@ import com.isabellnoack.myapp.api.PokemonSpecies;
 import com.isabellnoack.myapp.databinding.FragmentPokemonBinding;
 
 import java.io.IOException;
-import java.util.concurrent.atomic.AtomicInteger;
 
 @SuppressLint("SetTextI18n") //Hard Coded Text (Warnung ignorieren)
 
@@ -224,7 +223,8 @@ public class PokemonFragment extends Fragment implements SensorEventListener {
     }
 
 
-    int index=0;
+    int versionIndex = 0;
+
     void loadPokemonSpecies() {
         Activity activity = getActivity();
 
@@ -233,26 +233,24 @@ public class PokemonFragment extends Fragment implements SensorEventListener {
                 PokemonSpecies pokemonSpecies = new PokeAPI().requestPokemonSpecies(pokemonId); //Funktion der neuen Instanz pokeAPI aufrufen
                 activity.runOnUiThread(() -> { //UI Thread
 
-                    //UI Bindings
                     binding.pokemonSpeciesName.setText("Species: " + capitalize(pokemonSpecies.name));
 
-
                     // PokemonSpecies.flavorTextEntries
-                    index = 0;
+                    versionIndex = 0;
                     String flavorText = "none";
                     String version = "";
-                    for (FlavorTextEntry flavorTextEntry : pokemonSpecies.flavorTextEntries) {
-                            flavorText = flavorTextEntry.flavorText;
-                            version = flavorTextEntry.version.name;
-                            break;
+                    if (!pokemonSpecies.flavorTextEntries.isEmpty()) { //Liste nicht empty, dann:
+                        FlavorTextEntry flavorTextEntry = pokemonSpecies.flavorTextEntries.get(0); //Erster Eintrag
+                        flavorText = flavorTextEntry.flavorText;
+                        version = flavorTextEntry.version.name;
                     }
                     binding.pokemonSpeciesFlavorText.setText("'" + flavorText.replace("\n", " ") +
                             "'" + "\n Version " + version);
                     binding.pokemonSpeciesFlavorText.setOnClickListener(v -> {
-                        if (++index == pokemonSpecies.flavorTextEntries.size()) {
-                            index = 0;
+                        if (++versionIndex == pokemonSpecies.flavorTextEntries.size()) {    //Index erhöhen
+                            versionIndex = 0;
                         }
-                        FlavorTextEntry flavorTextEntry = pokemonSpecies.flavorTextEntries.get(index);
+                        FlavorTextEntry flavorTextEntry = pokemonSpecies.flavorTextEntries.get(versionIndex); //Eintrag mit ID
                         String flavorText1 = flavorTextEntry.flavorText;
                         binding.pokemonSpeciesFlavorText.setText("'" + flavorText1.replace("\n", " ") +
                                 "'" + "\n Version " + flavorTextEntry.version.name);

@@ -79,5 +79,5 @@ public class MainActivity extends AppCompatActivity {
     }
 
     //Mein Code
-    public static int pokemonIdToOpen;
+    public static int pokemonIdToOpen = 1;
 }

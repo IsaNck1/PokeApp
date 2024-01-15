@@ -79,6 +79,15 @@
             android:layout_marginTop="16dp" />
 
         <TextView
+            android:id="@+id/pokemon_species_flavor_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:textAlignment="center"
+            android:layout_marginTop="16dp"
+            android:text="Description: " />
+
+        <TextView
             android:id="@+id/pokemon_height"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

@@ -21,6 +21,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import com.isabellnoack.myapp.api.Ability;
+import com.isabellnoack.myapp.api.FlavorTextEntry;
 import com.isabellnoack.myapp.api.NameWithURL;
 import com.isabellnoack.myapp.api.PokeAPI;
 import com.isabellnoack.myapp.api.Pokemon;
@@ -28,6 +29,7 @@ import com.isabellnoack.myapp.api.PokemonSpecies;
 import com.isabellnoack.myapp.databinding.FragmentPokemonBinding;
 
 import java.io.IOException;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @SuppressLint("SetTextI18n") //Hard Coded Text (Warnung ignorieren)
 
@@ -222,6 +224,7 @@ public class PokemonFragment extends Fragment implements SensorEventListener {
     }
 
 
+    int index=0;
     void loadPokemonSpecies() {
         Activity activity = getActivity();
 
@@ -232,6 +235,28 @@ public class PokemonFragment extends Fragment implements SensorEventListener {
 
                     //UI Bindings
                     binding.pokemonSpeciesName.setText("Species: " + capitalize(pokemonSpecies.name));
+
+
+                    // PokemonSpecies.flavorTextEntries
+                    index = 0;
+                    String flavorText = "none";
+                    String version = "";
+                    for (FlavorTextEntry flavorTextEntry : pokemonSpecies.flavorTextEntries) {
+                            flavorText = flavorTextEntry.flavorText;
+                            version = flavorTextEntry.version.name;
+                            break;
+                    }
+                    binding.pokemonSpeciesFlavorText.setText("'" + flavorText.replace("\n", " ") +
+                            "'" + "\n Version " + version);
+                    binding.pokemonSpeciesFlavorText.setOnClickListener(v -> {
+                        if (++index == pokemonSpecies.flavorTextEntries.size()) {
+                            index = 0;
+                        }
+                        FlavorTextEntry flavorTextEntry = pokemonSpecies.flavorTextEntries.get(index);
+                        String flavorText1 = flavorTextEntry.flavorText;
+                        binding.pokemonSpeciesFlavorText.setText("'" + flavorText1.replace("\n", " ") +
+                                "'" + "\n Version " + flavorTextEntry.version.name);
+                    });
 
                 });
             } catch (

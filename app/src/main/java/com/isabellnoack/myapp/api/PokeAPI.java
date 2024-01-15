@@ -237,14 +237,49 @@ public class PokeAPI {
         while (reader.hasNext()) {
             switch (reader.nextName()) {
                 case "name":
-                    pokemonSpecies.name = reader.nextString(); //Formatierung: Strg+Alt+O Strg+Alt+L
+                    pokemonSpecies.name = reader.nextString(); // Formatierung: Strg+Alt+O Strg+Alt+L
                     break;
+
+
+                case "flavor_text_entries":
+                    reader.beginArray();
+                    while (reader.hasNext()) {
+                        FlavorTextEntry flavorTextEntry = readFlavorTextEntry(reader);
+                        if( flavorTextEntry.language.name.equals("en")) {   // nur englische Texte speichern
+                            pokemonSpecies.flavorTextEntries.add(flavorTextEntry);
+                        }
+                    }
+                    reader.endArray();
+                    break;
+
                 default:
                     reader.skipValue();
             }
         }
         reader.endObject();
         return pokemonSpecies;
+    }
+
+    private FlavorTextEntry readFlavorTextEntry(JsonReader reader) throws IOException {
+        FlavorTextEntry flavorTextEntry = new FlavorTextEntry();
+        reader.beginObject();
+        while (reader.hasNext()) {
+            switch (reader.nextName()) {
+                case "flavor_text":
+                    flavorTextEntry.flavorText = reader.nextString();
+                    break;
+                case "language":
+                    flavorTextEntry.language = readNameWithURL(reader);
+                    break;
+                case "version":
+                    flavorTextEntry.version = readNameWithURL(reader);
+                    break;
+                default:
+                    reader.skipValue();
+            }
+        }
+        reader.endObject();
+        return flavorTextEntry;
     }
 
     NameWithURL readNameWithURL(JsonReader reader) throws IOException {

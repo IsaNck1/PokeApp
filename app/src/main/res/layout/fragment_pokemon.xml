@@ -59,13 +59,22 @@
             android:text="Name:"
             android:textSize="@dimen/text_size_regular"/>
 
-        <TextView
+<!--        <TextView
             android:id="@+id/pokemon_species_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="16dp"
             android:text="Species:"
+            android:textSize="@dimen/text_size_regular"/>-->
+
+        <TextView
+            android:id="@+id/pokemon_species_varieties"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="16dp"
+            android:text="Varieties:"
             android:textSize="@dimen/text_size_regular"/>
 
 <!--        <TextView

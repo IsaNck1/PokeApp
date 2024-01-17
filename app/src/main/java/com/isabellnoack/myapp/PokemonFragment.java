@@ -26,6 +26,7 @@ import com.isabellnoack.myapp.api.NameWithURL;
 import com.isabellnoack.myapp.api.PokeAPI;
 import com.isabellnoack.myapp.api.Pokemon;
 import com.isabellnoack.myapp.api.PokemonSpecies;
+import com.isabellnoack.myapp.api.Variety;
 import com.isabellnoack.myapp.databinding.FragmentPokemonBinding;
 
 import java.io.IOException;
@@ -233,8 +234,6 @@ public class PokemonFragment extends Fragment implements SensorEventListener {
                 PokemonSpecies pokemonSpecies = new PokeAPI().requestPokemonSpecies(pokemonId); //Funktion der neuen Instanz pokeAPI aufrufen
                 activity.runOnUiThread(() -> { //UI Thread
 
-                    binding.pokemonSpeciesName.setText("Species: " + capitalize(pokemonSpecies.name));
-
                     // PokemonSpecies.flavorTextEntries
                     versionIndex = 0;
                     String flavorText = "none";
@@ -255,6 +254,25 @@ public class PokemonFragment extends Fragment implements SensorEventListener {
                         binding.pokemonSpeciesFlavorText.setText("'" + flavorText1.replace("\n", " ") +
                                 "'" + "\n Version " + flavorTextEntry.version.name);
                     });
+
+                    //PokemonSpecies.variety, schauen wie viele es gibt
+                    String varieties = "none";
+                    int numberOfVarieties = 0;
+                    for (Variety variety : pokemonSpecies.varieties) {
+                        NameWithURL pokemon = variety.pokemon;
+                        if (varieties.equals("none")) {
+                            varieties = capitalize(pokemon.name);
+                        } else {
+                            varieties = varieties + ", " + capitalize(pokemon.name);
+                        }
+                        numberOfVarieties++;
+                    }
+                    if (numberOfVarieties == 1) {
+                        binding.pokemonSpeciesVarieties.setText("Variety: " + varieties);
+                    } else {
+                        binding.pokemonSpeciesVarieties.setText("Varieties: " + varieties);
+                    }
+
 
                 });
             } catch (

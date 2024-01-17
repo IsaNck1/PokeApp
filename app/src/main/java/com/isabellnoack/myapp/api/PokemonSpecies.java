@@ -10,6 +10,8 @@ public class PokemonSpecies {
 
     public ArrayList<FlavorTextEntry> flavorTextEntries = new ArrayList<>();
 
+    public ArrayList<Variety> varieties = new ArrayList<>();
+
     @Override
     public String toString() {
         return "PokemonSpecies{" +

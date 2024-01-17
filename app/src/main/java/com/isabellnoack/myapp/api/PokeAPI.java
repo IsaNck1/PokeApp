@@ -252,6 +252,18 @@ public class PokeAPI {
                     reader.endArray();
                     break;
 
+                case "varieties":
+                    reader.beginArray();
+                    while (reader.hasNext()) {
+                        Variety variety = readVariety(reader);
+                        if(!variety.isDefault) { //falls is_default ist false:
+                            pokemonSpecies.varieties.add(variety);
+                        }
+                    }
+                    reader.endArray();
+                    break;
+
+
                 default:
                     reader.skipValue();
             }
@@ -280,6 +292,25 @@ public class PokeAPI {
         }
         reader.endObject();
         return flavorTextEntry;
+    }
+
+    private Variety readVariety(JsonReader reader) throws IOException {
+        Variety variety = new Variety();
+        reader.beginObject();
+        while (reader.hasNext()) {
+            switch (reader.nextName()) {
+                case "is_default":
+                    variety.isDefault = reader.nextBoolean();
+                    break;
+                case "pokemon":
+                    variety.pokemon = readNameWithURL(reader);
+                    break;
+                default:
+                    reader.skipValue();
+            }
+        }
+        reader.endObject();
+        return variety;
     }
 
     NameWithURL readNameWithURL(JsonReader reader) throws IOException {

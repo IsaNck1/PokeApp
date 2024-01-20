@@ -1,4 +1,4 @@
-package com.isabellnoack.myapp.api;
+package com.isabellnoack.pokeapp.api;
 
 public class FlavorTextEntry {
 

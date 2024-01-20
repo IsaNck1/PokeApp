@@ -1,6 +1,6 @@
-package com.isabellnoack.myapp;
+package com.isabellnoack.pokeapp;
 
-import com.isabellnoack.myapp.api.PokeAPI;
+import com.isabellnoack.pokeapp.api.PokeAPI;
 
 import java.io.IOException;
 

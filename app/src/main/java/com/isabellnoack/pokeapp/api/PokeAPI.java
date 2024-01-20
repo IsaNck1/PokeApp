@@ -1,4 +1,4 @@
-package com.isabellnoack.myapp.api;
+package com.isabellnoack.pokeapp.api;
 
 import android.util.JsonReader;
 import android.util.JsonToken;
@@ -23,15 +23,13 @@ public class PokeAPI {
      */
     public Pokemon requestPokemon(int pokemonId) throws IOException {
         String url = "https://pokeapi.co/api/v2/pokemon/" + pokemonId; // Datenquelle
-        JsonReader reader;
-        reader = requestJsonReader(url); // Interpretiert Text aus Internet als JSON
+        JsonReader reader = requestJsonReader(url); // Interpretiert Text aus Internet als JSON
         return readPokemon(reader); // Funktion für JSON in Pokemon Instanz
     }
 
     public PokemonSpecies requestPokemonSpecies(int pokemonId) throws IOException {
         String url = "https://pokeapi.co/api/v2/pokemon-species/" + pokemonId;
-        JsonReader reader;
-        reader = requestJsonReader(url);
+        JsonReader reader = requestJsonReader(url);
         return readPokemonSpecies(reader);
     }
 

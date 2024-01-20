@@ -1,6 +1,6 @@
-package com.isabellnoack.myapp.api;
+package com.isabellnoack.pokeapp.api;
 
-import static com.isabellnoack.myapp.api.PokeAPI.USER_AGENT;
+import static com.isabellnoack.pokeapp.api.PokeAPI.USER_AGENT;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -13,19 +13,14 @@ import java.net.URL;
 public class ImageLoader {
 
     public static Bitmap loadImageFromUrl(String imageUrl) throws IOException {
-        if(imageUrl.isEmpty()) return null;
+        if (imageUrl.isEmpty()) return null;
         HttpURLConnection connection = (HttpURLConnection) new URL(imageUrl).openConnection();
         connection.setRequestProperty("User-Agent", USER_AGENT);
 
         // Öffne einen InputStream zum Lesen der Bildressource
-        InputStream inputStream = connection.getInputStream();
-
-        // Dekodiere den InputStream in ein Bitmap
-        Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
-
-        // Schließe den InputStream
-        inputStream.close();
-
-        return bitmap;
+        try (InputStream inputStream = connection.getInputStream()) { // "try with resource" schließt InputStream automatisch
+            // Dekodiere den InputStream in ein Bitmap
+            return BitmapFactory.decodeStream(inputStream);
+        }
     }
 }

@@ -3,11 +3,11 @@ plugins {
 }
 
 android {
-    namespace = "com.isabellnoack.myapp"
+    namespace = "com.isabellnoack.pokeapp"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.isabellnoack.myapp"
+        applicationId = "com.isabellnoack.pokeapp"
         minSdk = 24
         targetSdk = 34
         versionCode = 1

@@ -1,10 +1,13 @@
-package com.isabellnoack.myapp;
+package com.isabellnoack.pokeapp;
 
-import static com.isabellnoack.myapp.DetailFragment.LAST_POKEMON_ID;
-import static com.isabellnoack.myapp.DetailFragment.pokemonIdToOpen;
+import static com.isabellnoack.pokeapp.DetailFragment.FIRST_POKEMON_ID;
+import static com.isabellnoack.pokeapp.DetailFragment.LAST_POKEMON_ID;
+import static com.isabellnoack.pokeapp.DetailFragment.capitalize;
+import static com.isabellnoack.pokeapp.DetailFragment.pokemonIdToOpen;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,11 +15,17 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.isabellnoack.pokeapp.api.ImageLoader;
+import com.isabellnoack.pokeapp.api.PokeAPI;
+import com.isabellnoack.pokeapp.api.Pokemon;
 
 import java.io.IOException;
 
-public class ListAdapter extends RecyclerView.Adapter<ListItemHolder> {
+public class ListAdapter extends RecyclerView.Adapter<ListItem_ViewHolder> {
 // Adapter als Übersetzer von der RecyclerView zu meinen Daten und zu Layout
 // Füllt Daten für RecyclerView
 
@@ -36,9 +45,9 @@ public class ListAdapter extends RecyclerView.Adapter<ListItemHolder> {
      */
     @NonNull
     @Override
-    public ListItemHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.recyclerview_item, parent, false);
-        ListItemHolder holder = new ListItemHolder(view);
+    public ListItem_ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View inflatedView = LayoutInflater.from(parent.getContext()).inflate(R.layout.recyclerview_item, parent, false); //neues recyclerview_item
+        ListItem_ViewHolder holder = new ListItem_ViewHolder(inflatedView);
 
         // COLUMNS BUTTON - Anpassung der Anordnung der TextViews basierend auf der Anzahl der Spalten
         if (numberOfColumns == 1) {
@@ -65,23 +74,23 @@ public class ListAdapter extends RecyclerView.Adapter<ListItemHolder> {
      */
     @Override
     @SuppressLint("SetTextI18n")
-    public void onBindViewHolder(@NonNull ListItemHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ListItem_ViewHolder holder, int position) {
 
-        int id = position + 1;
+        int id = FIRST_POKEMON_ID + position;
 
         new Thread(() -> { // Daten laden auf Download-Thread
             try {
-                final ViewItem item = new ViewItem(id);
-                activity.runOnUiThread(() -> { // Daten darstellen auf UI-Thread
+                Pokemon pokemon = new PokeAPI().requestPokemon(id);
+                Bitmap image = ImageLoader.loadImageFromUrl(pokemon.imageUrl);
 
-                    if (item.image != null) {
-                        holder.imageView.setImageBitmap(item.image);
+                activity.runOnUiThread(() -> { // Daten darstellen auf UI-Thread
+                    holder.textViewID.setText("ID: " + id);
+                    holder.textViewName.setText(capitalize(pokemon.name));
+                    if (image != null) {
+                        holder.imageView.setImageBitmap(image);
                     } else {
                         holder.imageView.setImageResource(R.drawable.empty);
                     }
-
-                    holder.textViewID.setText("ID: " + id);
-                    holder.textViewName.setText(item.name);
                 });
             } catch (IOException exception) {
                 // Hier im Download Thread, um etwas anzeigen zu können in den UI Thread wechseln
@@ -91,10 +100,12 @@ public class ListAdapter extends RecyclerView.Adapter<ListItemHolder> {
             }
         }).start();
 
-        // Von ListFragment zu PokemonFragment
+        // Von ListFragment zu DetailFragment
         holder.cardView.setOnClickListener(e -> {
             pokemonIdToOpen = id;
-            holder.openPokemonFragment(); //Methode OpenPokemonFragment vom Holder wird aufgerufen
+            // Navigation zum DetailFragment
+            NavController navController = Navigation.findNavController(holder.itemView);
+            navController.navigate(R.id.action_listFragment_to_detailFragment);
         });
     }
 

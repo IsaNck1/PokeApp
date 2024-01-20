@@ -6,23 +6,23 @@
     app:startDestination="@id/ListFragment">
 
     <fragment
-        android:id="@+id/PokemonFragment"
-        android:name="com.isabellnoack.myapp.DetailFragment"
+        android:id="@+id/DetailFragment"
+        android:name="com.isabellnoack.pokeapp.DetailFragment"
         android:label="@string/first_fragment_label"
-        tools:layout="@layout/fragment_pokemon">
+        tools:layout="@layout/fragment_detail">
 
         <action
-            android:id="@+id/action_pokemonFragment_to_listFragment"
+            android:id="@+id/action_detailFragment_to_listFragment"
             app:destination="@id/ListFragment" />
     </fragment>
     <fragment
         android:id="@+id/ListFragment"
-        android:name="com.isabellnoack.myapp.ListFragment"
+        android:name="com.isabellnoack.pokeapp.ListFragment"
         android:label="@string/second_fragment_label"
         tools:layout="@layout/fragment_list">
 
         <action
-            android:id="@+id/action_listFragment_to_pokemonFragment"
-            app:destination="@id/PokemonFragment" />
+            android:id="@+id/action_listFragment_to_detailFragment"
+            app:destination="@id/DetailFragment" />
     </fragment>
 </navigation>

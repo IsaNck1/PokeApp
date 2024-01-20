@@ -1,4 +1,4 @@
-package com.isabellnoack.myapp;
+package com.isabellnoack.pokeapp;
 
 import android.content.Context;
 

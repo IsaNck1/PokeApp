@@ -1,6 +1,7 @@
 package com.isabellnoack.myapp.api;
 
 public class FlavorTextEntry {
+
     public String flavorText;
     public NameWithURL language;
     public NameWithURL version;

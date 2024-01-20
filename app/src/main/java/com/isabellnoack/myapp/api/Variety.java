@@ -1,6 +1,7 @@
 package com.isabellnoack.myapp.api;
 
 public class Variety {
+
     public NameWithURL pokemon;
     public boolean isDefault;
 

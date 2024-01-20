@@ -1,16 +1,11 @@
 package com.isabellnoack.myapp;
 
 import static com.isabellnoack.myapp.MainActivity.pokemonIdToOpen;
+import static com.isabellnoack.myapp.PokemonFragment.LAST_POKEMON_ID;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.content.Context;
-import android.content.Intent;
-import android.icu.text.Transliterator;
-import android.net.Uri;
 import android.os.Bundle;
-import android.telephony.SmsManager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,19 +16,13 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
-import androidx.core.content.ContextCompat;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
-import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.isabellnoack.myapp.api.PokeAPI;
-
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
 
-public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> {
+public class PokemonListAdapter extends RecyclerView.Adapter<PokemonListAdapter.PokemonListItemHolder> {
 //Adapter als Übersetzer von der RecyclingView zu meinen Daten und zu Layout
 
     private final int numberOfColumns; // NEU: Variable für die Anzahl der Spalten hinzufügen
@@ -41,7 +30,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     private final Activity activity;
 
     //Konstruktor initialisiert die Klassenvariablen mit den übergebenen Werten
-    public RecyclerViewAdapter(int numberOfColumns, Activity activity) {
+    public PokemonListAdapter(int numberOfColumns, Activity activity) {
         this.numberOfColumns = numberOfColumns; // NEU: Anzahl der Spalten setzen
         this.activity = activity; //Für Toast anzeigen und für RunOnUIThread (Thread wechseln)
     }
@@ -52,14 +41,14 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     // Instanz von View gebaut
     // Funktion wird aufgerufen um neuen ViewHolder zu erstellen. Die Funktion erstellt eine Ansicht (View) durch Aufblasen (inflate) des Layouts recyclerview_item
     // ViewHolder (mit View) wird zurück gegeben (anhand der ViewHolder Klasse die unten definiert wurde)
-    public RecyclerViewAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public PokemonListItemHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.recyclerview_item, parent, false); //View anhand des Layouts in meinen Ressourcen
-        return new ViewHolder(view);
+        return new PokemonListItemHolder(view);
     }
 
     // Für den ViewHolder werden an der Position position (An welcher Stelle in der Liste) die Daten abgefragt
     @Override
-    public void onBindViewHolder(@NonNull RecyclerViewAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull PokemonListItemHolder holder, int position) {
 
         int id = position + 1;
 
@@ -78,8 +67,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                     holder.textViewID.setText("ID: " + item.id.toString()); //Sting mit "ID:" + ID
                     holder.textViewName.setText(item.name);
                 });
-            } catch (
-                    IOException exception) { //Hier im Download Thread, um etwas anzeigen zu können in den UI Thread wechseln
+            } catch (IOException exception) {
+                //Hier im Download Thread, um etwas anzeigen zu können in den UI Thread wechseln
                 activity.runOnUiThread(() -> { //jetzt auf UI Thread
                     // send warning to user
                     Toast.makeText(activity, exception.toString(), Toast.LENGTH_LONG).show(); //Toast Klasse mit: context(so anzeigen: activity ; Fehler als String anzeigen; Wie lange angezeigt)
@@ -117,24 +106,21 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         });
     }
 
-
-    // Grösse der Liste
+    // Größe der Liste
     @Override
     public int getItemCount() {
-        return 1025;
-        //return recyclerViewItems.size();
+        return LAST_POKEMON_ID;
     }
 
-
     // Definition ViewHolder Klasse
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    public static class PokemonListItemHolder extends RecyclerView.ViewHolder {
         ImageView imageView;
         TextView textViewID;
         TextView textViewName;
         LinearLayout layoutChanged;
         CardView cardView;
 
-        public ViewHolder(@NonNull View itemView) {
+        public PokemonListItemHolder(@NonNull View itemView) {
             super(itemView); //super(itemView) sorgt dafür, dass die ViewHolder-Instanz ordnungsgemäß initialisiert wird, indem der Konstruktor der Elternklasse aufgerufen wird
 
             imageView = itemView.findViewById(R.id.list_pokemon_image); //Layout finden
@@ -145,9 +131,9 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
         }
 
-        //Methode openPokemonFragment für ListFragment zu PokemonFragment
+        // Methode openPokemonFragment für ListFragment zu PokemonFragment
         public void openPokemonFragment(int pokemonId) {
-            //Hier wird die Navigation zum PokemonFragment mit der übergebenen Pokemon-ID durchgeführt
+            // Hier wird die Navigation zum PokemonFragment mit der übergebenen Pokemon-ID durchgeführt
             NavController navController = Navigation.findNavController(itemView);
             Bundle bundle = new Bundle();
             bundle.putInt("pokemonId", pokemonId);

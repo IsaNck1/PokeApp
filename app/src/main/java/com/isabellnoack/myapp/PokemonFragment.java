@@ -22,6 +22,7 @@ import androidx.fragment.app.Fragment;
 
 import com.isabellnoack.myapp.api.Ability;
 import com.isabellnoack.myapp.api.FlavorTextEntry;
+import com.isabellnoack.myapp.api.ImageLoader;
 import com.isabellnoack.myapp.api.NameWithURL;
 import com.isabellnoack.myapp.api.PokeAPI;
 import com.isabellnoack.myapp.api.Pokemon;
@@ -32,8 +33,9 @@ import com.isabellnoack.myapp.databinding.FragmentPokemonBinding;
 import java.io.IOException;
 
 @SuppressLint("SetTextI18n") //Hard Coded Text (Warnung ignorieren)
-
 public class PokemonFragment extends Fragment implements SensorEventListener {
+
+    static final int LAST_POKEMON_ID = 1025;
 
     private FragmentPokemonBinding binding;
 
@@ -67,7 +69,7 @@ public class PokemonFragment extends Fragment implements SensorEventListener {
         //Button NEXT POKEMON
         binding.nextPokemonButton.setOnClickListener((view1) -> {
             // laden des nächsten Pokemon
-            if (pokemonId == 1025) { //1025 ist das letzte Pokemon
+            if (pokemonId == LAST_POKEMON_ID) {
                 pokemonId = 1;
                 pokemonIdToOpen = 1;
             } else {
@@ -82,8 +84,8 @@ public class PokemonFragment extends Fragment implements SensorEventListener {
         binding.previousPokemonButton.setOnClickListener((view1) -> {
             // laden des vorherigen Pokemon
             if (pokemonId == 1) {
-                pokemonId = 1025;
-                pokemonIdToOpen = 1025;
+                pokemonId = LAST_POKEMON_ID;
+                pokemonIdToOpen = LAST_POKEMON_ID;
             } else {
                 pokemonId--;
                 pokemonIdToOpen--;
@@ -111,7 +113,8 @@ public class PokemonFragment extends Fragment implements SensorEventListener {
     /**
      * @noinspection StringConcatenationInLoop
      */
-    @SuppressLint("SetTextI18n") //Hard Coded Text nicht highlighten
+    @SuppressLint("SetTextI18n")
+    //Hard Coded Text nicht highlighten
 
     void loadPokemon() {
         //Neuer Thread da Hauptthread nicht blockiert werden darf
@@ -125,45 +128,21 @@ public class PokemonFragment extends Fragment implements SensorEventListener {
 
                     //UI Bindings
                     binding.pokemonName.setText("Name: " + capitalize(pokemon.name));
-
                     binding.pokemonId.setText("ID: " + pokemonId);
 
                     // Bild laden und in ImageView setzen
-                    //try {
-                    //    Bitmap bitmap = PokeAPI.ImageLoader.loadImageFromUrl(pokemon.imageUrlDreamWorld); // Hier wird der entsprechenden Bild-URL-Pfad übergeben
-                    //    binding.pokemonImage.setImageBitmap(bitmap); //an Layout übergeben
-                    //} catch (IOException e) {
-                    //    e.printStackTrace(); //Fehlermeldung
-                    //}
-
-                    // Bild laden und in ImageView setzen
-                    try {
-                        new Thread(new Runnable() {
-                            @Override
-                            public void run() {
-                                try {
-                                    if (pokemon.imageUrl != "") { //wenn Sprite null > in RecyclerViewItem übersprungen > Standard Wert ""
-                                        final Bitmap bitmap = PokeAPI.ImageLoader.loadImageFromUrl(pokemon.imageUrl);
-                                        getActivity().runOnUiThread(new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                binding.pokemonImage.setImageBitmap(bitmap);
-                                            }
-                                        });
-
-                                    } else { //Hier statt "" dann empty.xml setzen
-                                        binding.pokemonImage.setImageResource(R.drawable.empty);
-                                    }
-
-                                } catch (IOException e) {
-                                    e.printStackTrace(); //Fehlermeldung
-                                }
+                    new Thread(() -> {
+                        try {
+                            if (!pokemon.imageUrl.equals("")) { //wenn Sprite null > in RecyclerViewItem übersprungen > Standard Wert ""
+                                final Bitmap bitmap = ImageLoader.loadImageFromUrl(pokemon.imageUrl);
+                                getActivity().runOnUiThread(() -> binding.pokemonImage.setImageBitmap(bitmap));
+                            } else {
+                                binding.pokemonImage.setImageResource(R.drawable.empty); //Hier statt "" empty.xml setzen
                             }
-
-                        }).start();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }).start();
 
                     if (pokemon.weight != 0) {
                         binding.pokemonWeight.setText("Weight: " + (pokemon.weight / 10.0f) + " kg"); //Angabe in Hectogramm // ausserdem mit float multiliziert, für Kommastellen
@@ -180,7 +159,6 @@ public class PokemonFragment extends Fragment implements SensorEventListener {
                     //pokemon.types, nur name aus dem array ausgeben
                     String types = "none";
                     for (NameWithURL type : pokemon.types) {
-                        //for (Typ variablen-name : Datenquelle)
                         if (types.equals("none")) {
                             types = capitalize(type.name);                  //Wert überschreiben mit Pokemon Type
                         } else {
@@ -197,7 +175,6 @@ public class PokemonFragment extends Fragment implements SensorEventListener {
                         if (ability.isHidden) {
                             continue; //macht mit dem for weiter, und ignoriert damit die Ability wenn isHidden true
                         }
-                        //for (Typ variablen-name : Datenquelle)
                         numberOfAbilities++;
                         if (abilities.equals("none")) {
                             abilities = capitalize(nameWithURL.name);
@@ -212,9 +189,9 @@ public class PokemonFragment extends Fragment implements SensorEventListener {
                     }
 
                 });
-            } catch (
-                    IOException exception) { //Hier im Download Thread, um etwas anzeigen zu können in den UI Thread wechseln
-                activity.runOnUiThread(() -> { //jetzt auf UI Thread
+            } catch (IOException exception) {
+                // Hier im Download Thread, um etwas anzeigen zu können in den UI Thread wechseln
+                activity.runOnUiThread(() -> { // jetzt auf UI Thread
                     // send warning to user
                     Toast.makeText(activity, exception.toString(), Toast.LENGTH_LONG).show(); //Toast Klasse mit: context(so anzeigen: activity ; Fehler als String anzeigen; Wie lange angezeigt)
                 });
@@ -223,7 +200,24 @@ public class PokemonFragment extends Fragment implements SensorEventListener {
     }
 
 
-    int versionIndex = 0;
+    int flavorTextIndex = 0;
+
+    void showNextFlavorText(PokemonSpecies pokemonSpecies) {
+        if (pokemonSpecies.flavorTextEntries.isEmpty()) {
+            binding.pokemonSpeciesFlavorText.setText("");
+            return;
+        }
+        FlavorTextEntry flavorTextEntry = pokemonSpecies.flavorTextEntries.get(flavorTextIndex); //Eintrag mit ID
+        String flavorText1 = flavorTextEntry.flavorText;
+        binding.pokemonSpeciesFlavorText.setText("'" +
+                flavorText1
+                        .replace("\n", " ")
+                        .replace("\f", " ") +
+                "'" + "\n Version " + flavorTextEntry.version.name);
+        if (++flavorTextIndex == pokemonSpecies.flavorTextEntries.size()) { //Index erhöhen
+            flavorTextIndex = 0;
+        }
+    }
 
     void loadPokemonSpecies() {
         Activity activity = getActivity();
@@ -234,24 +228,10 @@ public class PokemonFragment extends Fragment implements SensorEventListener {
                 activity.runOnUiThread(() -> { //UI Thread
 
                     // PokemonSpecies.flavorTextEntries
-                    versionIndex = 0;
-                    String flavorText = "none";
-                    String version = "";
-                    if (!pokemonSpecies.flavorTextEntries.isEmpty()) { //Liste nicht empty, dann:
-                        FlavorTextEntry flavorTextEntry = pokemonSpecies.flavorTextEntries.get(0); //Erster Eintrag
-                        flavorText = flavorTextEntry.flavorText;
-                        version = flavorTextEntry.version.name;
-                    }
-                    binding.pokemonSpeciesFlavorText.setText("'" + flavorText.replace("\n", " ") +
-                            "'" + "\n Version " + version);
+                    flavorTextIndex = 0;
+                    showNextFlavorText(pokemonSpecies);
                     binding.pokemonSpeciesFlavorText.setOnClickListener(v -> {
-                        if (++versionIndex == pokemonSpecies.flavorTextEntries.size()) {    //Index erhöhen
-                            versionIndex = 0;
-                        }
-                        FlavorTextEntry flavorTextEntry = pokemonSpecies.flavorTextEntries.get(versionIndex); //Eintrag mit ID
-                        String flavorText1 = flavorTextEntry.flavorText;
-                        binding.pokemonSpeciesFlavorText.setText("'" + flavorText1.replace("\n", " ") +
-                                "'" + "\n Version " + flavorTextEntry.version.name);
+                        showNextFlavorText(pokemonSpecies);
                     });
 
                     //PokemonSpecies.variety, schauen wie viele es gibt
@@ -274,9 +254,9 @@ public class PokemonFragment extends Fragment implements SensorEventListener {
 
 
                 });
-            } catch (
-                    IOException exception) { //Hier im Download Thread, um etwas anzeigen zu können in den UI Thread wechseln
-                activity.runOnUiThread(() -> { //jetzt auf UI Thread
+            } catch (IOException exception) {
+                // Hier im Download Thread, um etwas anzeigen zu können in den UI Thread wechseln
+                activity.runOnUiThread(() -> { // jetzt auf UI Thread
                     Toast.makeText(activity, exception.toString(), Toast.LENGTH_LONG).show(); //Toast Klasse mit: context(so anzeigen: activity ; Fehler als String anzeigen; Wie lange angezeigt)
                 });
             }
@@ -292,16 +272,12 @@ public class PokemonFragment extends Fragment implements SensorEventListener {
 
 
     //Sensor
-    private static final float SHAKE_THRESHOLD = 20.0f; //g Beschleunigung
+    private static final float SHAKE_THRESHOLD = 20.0f; //g-Beschleunigung
     private long lastShakeTime;
 
 
     @Override
     public void onSensorChanged(SensorEvent event) {
-//        if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
-//            binding.sensor.setText("X: " + event.values[0] + ", Y: " + event.values[1] + ", Z: " + event.values[2]);
-//        }
-
         if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
             // Beschleunigungssensors Werte
             float x = event.values[0];
@@ -325,22 +301,14 @@ public class PokemonFragment extends Fragment implements SensorEventListener {
                 }
             }
         }
-
     }
 
     //Schütteln erkannt
     private void onShakeDetected() {
-        //Toast Nachricht
-        //Toast.makeText(getActivity(), "Shake Detected!", Toast.LENGTH_SHORT).show();
-
-        //360 Rotation
-        //ObjectAnimator rotationAnimator = ObjectAnimator.ofFloat(binding.pokemonImage, "rotation", 0f, 720f);
-
-        //Hin und Her Rotation
+        //Hin und Her Rotations-Animation
         ObjectAnimator rotationAnimator = ObjectAnimator.ofFloat(binding.pokemonImage, "rotation", 0f, -20f, 20f, -20f, 0f);
         rotationAnimator.setDuration(1000);
         rotationAnimator.start();
-
     }
 
     @Override

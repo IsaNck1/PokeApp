@@ -1,14 +1,12 @@
 package com.isabellnoack.myapp.api;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.util.JsonReader;
 import android.util.JsonToken;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.Reader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
@@ -17,81 +15,75 @@ import java.net.URL;
  */
 public class PokeAPI {
 
-    //1
-    public Pokemon requestPokemon(int id) throws IOException {
-        //Wo lesen wir unsere Daten her
-        String url = "https://pokeapi.co/api/v2/pokemon/" + id; //Datenquelle
+    static final String USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/118.0.0.0 Safari/537.36";
+
+    /**
+     * 1.:
+     * URL + pokemonId => (2.) JSON Daten => (3.) Instanz
+     */
+    public Pokemon requestPokemon(int pokemonId) throws IOException {
+        String url = "https://pokeapi.co/api/v2/pokemon/" + pokemonId; // Datenquelle
         JsonReader reader;
-        reader = requestJsonReader(url); //Interpretiert Text aus Internet als JSON
-        return readPokemon(reader); //Funktion für JSON in Pokemon Instanz
+        reader = requestJsonReader(url); // Interpretiert Text aus Internet als JSON
+        return readPokemon(reader); // Funktion für JSON in Pokemon Instanz
     }
 
-    public PokemonSpecies requestPokemonSpecies(int id) throws IOException {
-        String url = "https://pokeapi.co/api/v2/pokemon-species/" + id; //Datenquelle
+    public PokemonSpecies requestPokemonSpecies(int pokemonId) throws IOException {
+        String url = "https://pokeapi.co/api/v2/pokemon-species/" + pokemonId;
         JsonReader reader;
-        reader = requestJsonReader(url); //Interpretiert Text aus Internet als JSON
-        return readPokemonSpecies(reader); //Funktion für JSON in Pokemon Instanz
+        reader = requestJsonReader(url);
+        return readPokemonSpecies(reader);
     }
 
-    //2
-    JsonReader requestJsonReader(String url) throws IOException { //JSON lesen
+    /**
+     * 2.:
+     * Daten aus Internet lesen
+     * (Aus der URL wird ein JsonReader)
+     */
+    JsonReader requestJsonReader(String url) throws IOException {
+        // JSON lesen
         HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
-        connection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/118.0.0.0 Safari/537.36");
-        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(connection.getInputStream(), "UTF-8")); //Datenstrom als UTF-8 lesen
-        return new JsonReader(bufferedReader); //Text/JSON als Antwort
-    }
-
-    public static class ImageLoader {
-
-        public static Bitmap loadImageFromUrl(String imageUrl) throws IOException {
-            HttpURLConnection connection = (HttpURLConnection) new URL(imageUrl).openConnection();
-            connection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/118.0.0.0 Safari/537.36");
-
-            // Öffne einen InputStream zum Lesen der Bildressource
-            InputStream inputStream = connection.getInputStream();
-
-            // Dekodiere den InputStream in ein Bitmap
-            Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
-
-            // Schließe den InputStream
-            inputStream.close();
-
-            return bitmap;
-        }
+        connection.setRequestProperty("User-Agent", USER_AGENT);
+        Reader reader = new BufferedReader(new InputStreamReader(connection.getInputStream(), "UTF-8")); //Datenstrom als UTF-8 lesen (JSON Standard Kodierformat)
+        return new JsonReader(reader);
     }
 
 
-    //3
+    /**
+     * 3.:
+     * JSON zu Pokemon konvertieren
+     * Rückgabewert Pokemon, Funktions-Name readPokemon (Funktionsargumente Klasse JsonReader, Name reader), IO Exception(Internetabbruch, Serverabbruch)
+     */
     Pokemon readPokemon(JsonReader reader) throws IOException {
-        Pokemon pokemon = new Pokemon(); //Pokemon erstellen (Instanz der Klasse Pokemon)
-        reader.beginObject();   //Erste geschwungene Klammer geöffnet
+        Pokemon pokemon = new Pokemon(); // Instanz der Klasse Pokemon erstellen
+        reader.beginObject();   // Erste geschwungene Klammer geöffnet
         while (reader.hasNext()) {
             switch (reader.nextName()) {
                 case "name":
-                    pokemon.name = reader.nextString(); //Formatierung: Strg+Alt+O Strg+Alt+L
+                    pokemon.name = reader.nextString();
                     break;
 
                 case "base_experience":
-                    if (reader.peek() == JsonToken.NUMBER) { //Überprüft ob Token eine Zahl ist
+                    if (reader.peek() == JsonToken.NUMBER) { // Überprüft ob Token eine Zahl ist
                         pokemon.baseExperience = reader.nextInt();
                     } else reader.skipValue();
                     break;
 
-                case "sprites": //Darunter weitere geschungene Klammer, daher neues BeginObjekt
-
-                    reader.beginObject(); //BeginObjekt hat immer Reader.has Next
+                case "sprites": // Darunter weitere geschungene Klammer, daher neues BeginObjekt
+                    reader.beginObject(); // BeginObjekt hat immer Reader.has Next
                     while (reader.hasNext()) {
                         switch (reader.nextName()) {
-                            case "other": //Darunter weitere geschungene Klammer, daher neues BeginObjekt
 
+                            case "other": // Darunter weitere geschungene Klammer, daher neues BeginObjekt
                                 reader.beginObject();
                                 while (reader.hasNext()) {
                                     switch (reader.nextName()) {
-                                        case "official-artwork": //Darunter weitere geschungene Klammer, daher neues BeginObjekt
 
+                                        case "official-artwork": // Darunter weitere geschungene Klammer, daher neues BeginObjekt
                                             reader.beginObject();
                                             while (reader.hasNext()) {
                                                 switch (reader.nextName()) {
+
                                                     case "front_default":
                                                         if (reader.peek() == JsonToken.STRING) {
                                                             pokemon.imageUrl = reader.nextString();
@@ -155,7 +147,6 @@ public class PokeAPI {
                     reader.endArray();
                     break;
 
-
                 default:
                     reader.skipValue();
             }
@@ -164,7 +155,7 @@ public class PokeAPI {
         return pokemon;
     }
 
-    Ability readAbility(JsonReader reader) throws IOException { //Rückgabewert Ability
+    Ability readAbility(JsonReader reader) throws IOException {
         Ability ability = new Ability();
         reader.beginObject();
         while (reader.hasNext()) {
@@ -207,7 +198,7 @@ public class PokeAPI {
                     reader.beginArray();
                     while (reader.hasNext()) {
                         Variety variety = readVariety(reader);
-                        if (!variety.isDefault) { //falls is_default ist false:
+                        if (!variety.isDefault) { // falls is_default ist false:
                             pokemonSpecies.varieties.add(variety);
                         }
                     }

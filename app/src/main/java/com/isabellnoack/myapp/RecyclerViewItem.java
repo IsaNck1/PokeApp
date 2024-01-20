@@ -2,6 +2,7 @@ package com.isabellnoack.myapp;
 
 import android.graphics.Bitmap;
 
+import com.isabellnoack.myapp.api.ImageLoader;
 import com.isabellnoack.myapp.api.PokeAPI;
 import com.isabellnoack.myapp.api.Pokemon;
 
@@ -24,8 +25,8 @@ public class RecyclerViewItem {
 
         this.id = id;
 
-        if (pokemon.imageUrl != "") {
-            this.image = PokeAPI.ImageLoader.loadImageFromUrl(pokemon.imageUrl);
+        if (!pokemon.imageUrl.equals("")) {
+            this.image = ImageLoader.loadImageFromUrl(pokemon.imageUrl);
         }
     }
 }

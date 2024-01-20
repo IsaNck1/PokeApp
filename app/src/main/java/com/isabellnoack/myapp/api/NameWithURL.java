@@ -1,6 +1,7 @@
 package com.isabellnoack.myapp.api;
 
 public class NameWithURL {
+
     public String name = "";
     public String url = "";
 

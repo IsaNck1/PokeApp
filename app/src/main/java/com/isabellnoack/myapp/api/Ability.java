@@ -1,6 +1,7 @@
 package com.isabellnoack.myapp.api;
 
 public class Ability {
+
     public NameWithURL nameWithURL;
     public boolean isHidden;
 

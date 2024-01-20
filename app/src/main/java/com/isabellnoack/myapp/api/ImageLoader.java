@@ -13,6 +13,7 @@ import java.net.URL;
 public class ImageLoader {
 
     public static Bitmap loadImageFromUrl(String imageUrl) throws IOException {
+        if(imageUrl.isEmpty()) return null;
         HttpURLConnection connection = (HttpURLConnection) new URL(imageUrl).openConnection();
         connection.setRequestProperty("User-Agent", USER_AGENT);
 

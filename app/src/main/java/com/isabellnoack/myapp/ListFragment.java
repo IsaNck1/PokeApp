@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 
 import com.isabellnoack.myapp.databinding.FragmentListBinding;
 
-public class PokemonListFragment extends Fragment {
+public class ListFragment extends Fragment {
 
     private int numberOfColumns = 1; // Anzahl der Spalten bei Start
     private FragmentListBinding binding;
@@ -29,7 +29,7 @@ public class PokemonListFragment extends Fragment {
 
         //Button PREVIOUS PAGE
         binding.buttonSecond.setOnClickListener(view1 ->
-                NavHostFragment.findNavController(PokemonListFragment.this)
+                NavHostFragment.findNavController(ListFragment.this)
                         .navigate(R.id.action_listFragment_to_pokemonFragment));
 
         //Button Columns
@@ -45,24 +45,19 @@ public class PokemonListFragment extends Fragment {
         //set Fixed Size
         binding.recyclerView.setHasFixedSize(true);
 
-        //Hier wird der GridLayoutManager mit 1,2 oder 3 Spalten erstellt
-        GridLayoutManager layoutManager = new GridLayoutManager(view.getContext(), numberOfColumns);
-        binding.recyclerView.setLayoutManager(layoutManager);
-
-        //Hier wird der Adapter für die RecyclerView gesetzt (Alle Variablen werden übergeben: recyclerViewItems,context,numberOfColumns)
-        PokemonListAdapter pokemonListAdapter = new PokemonListAdapter(numberOfColumns, getActivity());
-        binding.recyclerView.setAdapter(pokemonListAdapter);
+        updateRecyclerView();
 
     }
 
     // Methode zur Aktualisierung der RecyclerView mit der neuen Anzahl von Spalten
     private void updateRecyclerView() {
-        // Adapter für die RecyclerView erneut setzen
-        PokemonListAdapter pokemonListAdapter = new PokemonListAdapter(numberOfColumns, getActivity());
-        binding.recyclerView.setAdapter(pokemonListAdapter);
-
+        //Hier wird der GridLayoutManager mit 1,2 oder 3 Spalten erstellt
         GridLayoutManager layoutManager = new GridLayoutManager(getContext(), numberOfColumns);
         binding.recyclerView.setLayoutManager(layoutManager);
+
+        //Hier wird der Adapter für die RecyclerView gesetzt (Alle Variablen werden übergeben: recyclerViewItems,context,numberOfColumns)
+        ListAdapter pokemonListAdapter = new ListAdapter(numberOfColumns, getActivity());
+        binding.recyclerView.setAdapter(pokemonListAdapter);
     }
 
     @Override

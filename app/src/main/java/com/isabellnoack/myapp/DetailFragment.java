@@ -1,15 +1,10 @@
 package com.isabellnoack.myapp;
 
-import static com.isabellnoack.myapp.MainActivity.pokemonIdToOpen;
-
-import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.hardware.Sensor;
-import android.hardware.SensorEvent;
-import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -33,35 +28,30 @@ import com.isabellnoack.myapp.databinding.FragmentPokemonBinding;
 import java.io.IOException;
 
 @SuppressLint("SetTextI18n") //Hard Coded Text (Warnung ignorieren)
-public class PokemonFragment extends Fragment implements SensorEventListener {
+public class DetailFragment extends Fragment {
 
     static final int LAST_POKEMON_ID = 1025;
+
+    public static int pokemonIdToOpen = 1;
 
     private FragmentPokemonBinding binding;
 
     @Override
-    public View onCreateView(
-            //Layout Inflater
-            LayoutInflater inflater, ViewGroup container,
-            Bundle savedInstanceState
-    ) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         //Sensor
         try {
             SensorManager sensorManager = (SensorManager) getActivity().getSystemService(Context.SENSOR_SERVICE); //getActivity gibt mir die Main Activity zurück, damit hat man auf vieles Zugriff
             Sensor sensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-            sensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_NORMAL);
-        } catch (
-                NullPointerException ignored) { //wenn NullPointerException d.h. Sensoren nicht gegeben, dann passiert einfach nichts
+            sensorManager.registerListener(new ShakeSensor(binding), sensor, SensorManager.SENSOR_DELAY_NORMAL);
+        } catch (NullPointerException ignored) {
+            // wenn NullPointerException d.h. Sensoren nicht gegeben, dann passiert einfach nichts
         }
 
         //Layout Inflater
         binding = FragmentPokemonBinding.inflate(inflater, container, false);
-
         return binding.getRoot();
     }
-
-    int pokemonId = pokemonIdToOpen;
 
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -69,11 +59,9 @@ public class PokemonFragment extends Fragment implements SensorEventListener {
         //Button NEXT POKEMON
         binding.nextPokemonButton.setOnClickListener((view1) -> {
             // laden des nächsten Pokemon
-            if (pokemonId == LAST_POKEMON_ID) {
-                pokemonId = 1;
+            if (pokemonIdToOpen == LAST_POKEMON_ID) {
                 pokemonIdToOpen = 1;
             } else {
-                pokemonId++;
                 pokemonIdToOpen++;
             }
             loadPokemon();
@@ -83,11 +71,9 @@ public class PokemonFragment extends Fragment implements SensorEventListener {
         //Button PREVIOUS POKEMON
         binding.previousPokemonButton.setOnClickListener((view1) -> {
             // laden des vorherigen Pokemon
-            if (pokemonId == 1) {
-                pokemonId = LAST_POKEMON_ID;
+            if (pokemonIdToOpen == 1) {
                 pokemonIdToOpen = LAST_POKEMON_ID;
             } else {
-                pokemonId--;
                 pokemonIdToOpen--;
             }
 
@@ -105,7 +91,7 @@ public class PokemonFragment extends Fragment implements SensorEventListener {
     /**
      * Ersten Character groß schreiben
      */
-    String capitalize(String name) {
+    public static String capitalize(String name) {
         name = Character.toUpperCase(name.charAt(0)) + name.substring(1);
         return name;
     }
@@ -123,17 +109,17 @@ public class PokemonFragment extends Fragment implements SensorEventListener {
 
         new Thread(() -> { //Download Thread
             try {
-                Pokemon pokemon = new PokeAPI().requestPokemon(pokemonId); //Funktion der neuen Instanz pokeAPI aufrufen
+                Pokemon pokemon = new PokeAPI().requestPokemon(pokemonIdToOpen); //Funktion der neuen Instanz pokeAPI aufrufen
                 activity.runOnUiThread(() -> { //UI Thread
 
                     //UI Bindings
                     binding.pokemonName.setText("Name: " + capitalize(pokemon.name));
-                    binding.pokemonId.setText("ID: " + pokemonId);
+                    binding.pokemonId.setText("ID: " + pokemonIdToOpen);
 
                     // Bild laden und in ImageView setzen
                     new Thread(() -> {
                         try {
-                            if (!pokemon.imageUrl.equals("")) { //wenn Sprite null > in RecyclerViewItem übersprungen > Standard Wert ""
+                            if (!pokemon.imageUrl.isEmpty()) { //wenn Sprite null > in RecyclerViewItem übersprungen > Standard Wert ""
                                 final Bitmap bitmap = ImageLoader.loadImageFromUrl(pokemon.imageUrl);
                                 getActivity().runOnUiThread(() -> binding.pokemonImage.setImageBitmap(bitmap));
                             } else {
@@ -153,7 +139,7 @@ public class PokemonFragment extends Fragment implements SensorEventListener {
                     if (pokemon.height != 0) {
                         binding.pokemonHeight.setText("Height: " + (pokemon.height / 10.0f) + " m"); //Angabe in Decimeter
                     } else {
-                        binding.pokemonHeight.setText("Weight: undefined");
+                        binding.pokemonHeight.setText("Height: undefined");
                     }
 
                     //pokemon.types, nur name aus dem array ausgeben
@@ -221,10 +207,11 @@ public class PokemonFragment extends Fragment implements SensorEventListener {
 
     void loadPokemonSpecies() {
         Activity activity = getActivity();
+        assert activity != null;
 
         new Thread(() -> {
             try {
-                PokemonSpecies pokemonSpecies = new PokeAPI().requestPokemonSpecies(pokemonId); //Funktion der neuen Instanz pokeAPI aufrufen
+                PokemonSpecies pokemonSpecies = new PokeAPI().requestPokemonSpecies(pokemonIdToOpen); //Funktion der neuen Instanz pokeAPI aufrufen
                 activity.runOnUiThread(() -> { //UI Thread
 
                     // PokemonSpecies.flavorTextEntries
@@ -251,8 +238,6 @@ public class PokemonFragment extends Fragment implements SensorEventListener {
                     } else {
                         binding.pokemonSpeciesVarieties.setText("Varieties: " + varieties);
                     }
-
-
                 });
             } catch (IOException exception) {
                 // Hier im Download Thread, um etwas anzeigen zu können in den UI Thread wechseln
@@ -261,58 +246,5 @@ public class PokemonFragment extends Fragment implements SensorEventListener {
                 });
             }
         }).start();
-    }
-
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        binding = null;
-    }
-
-
-    //Sensor
-    private static final float SHAKE_THRESHOLD = 20.0f; //g-Beschleunigung
-    private long lastShakeTime;
-
-
-    @Override
-    public void onSensorChanged(SensorEvent event) {
-        if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
-            // Beschleunigungssensors Werte
-            float x = event.values[0];
-            float y = event.values[1];
-            float z = event.values[2];
-
-            // Absolute Beschleunigung berechnen (Betrag der Differenz zur Erdbeschleunigung)
-            // .abs = absoluter Betrag: heißt es geht in + oder -
-            float acceleration = Math.abs(x) + Math.abs(y) + Math.abs(z) - (SensorManager.GRAVITY_EARTH); //Gravitation 9,81 m/s², auf Z wenn es flach auf Tisch liegt
-
-            // Die aktuelle Zeit in Millisekunden
-            long currentTime = System.currentTimeMillis();
-
-            // Überprüfe, ob die absolute Beschleunigung den Schwellenwert für ein Schütteln überschreitet
-            if (acceleration > SHAKE_THRESHOLD) {
-
-                // Cool-Down: Überprüfe, ob seit dem letzten Schütteln eine bestimmte Zeit vergangen ist
-                if (currentTime > lastShakeTime + 1000) {       //Momentane Zeit ist größer als letzteShake Zeit + 1sek
-                    onShakeDetected();                          //Wenn ja, wird Methode aufgerufen
-                    lastShakeTime = currentTime;
-                }
-            }
-        }
-    }
-
-    //Schütteln erkannt
-    private void onShakeDetected() {
-        //Hin und Her Rotations-Animation
-        ObjectAnimator rotationAnimator = ObjectAnimator.ofFloat(binding.pokemonImage, "rotation", 0f, -20f, 20f, -20f, 0f);
-        rotationAnimator.setDuration(1000);
-        rotationAnimator.start();
-    }
-
-    @Override
-    public void onAccuracyChanged(Sensor sensor, int accuracy) {
-
     }
 }

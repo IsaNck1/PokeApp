@@ -183,69 +183,20 @@ public class PokeAPI {
         return ability;
     }
 
-    Berry readBerry(JsonReader reader) throws IOException {
-        Berry berry = new Berry();
-        reader.beginObject();
-        while (reader.hasNext()) {
-            switch (reader.nextName()) {
-                case "name":
-                    berry.name = reader.nextString();
-                    break;
-                case "size":
-                    berry.size = reader.nextInt();
-                    break;
-                case "smoothness":
-                    berry.smoothness = reader.nextInt();
-                    break;
-                case "flavors":
-                    reader.beginArray();
-                    while (reader.hasNext()) {
-                        berry.flavors.add(readFlavorWithPotency(reader));
-                    }
-                    reader.endArray();
-                    break;
-                default:
-                    reader.skipValue();
-            }
-        }
-        reader.endObject();
-        return berry;
-    }
-
-    BerryFlavor readFlavorWithPotency(JsonReader reader) throws IOException {
-        BerryFlavor flavorWithPotency = new BerryFlavor();
-        reader.beginObject();
-        while (reader.hasNext()) {
-            switch (reader.nextName()) {
-                case "potency":
-                    flavorWithPotency.potency = reader.nextInt();
-                    break;
-                case "flavor":
-                    flavorWithPotency.flavor = readNameWithURL(reader);
-                    break;
-                default:
-                    reader.skipValue();
-            }
-        }
-        reader.endObject();
-        return flavorWithPotency;
-    }
-
     PokemonSpecies readPokemonSpecies(JsonReader reader) throws IOException {
         PokemonSpecies pokemonSpecies = new PokemonSpecies();
         reader.beginObject();
         while (reader.hasNext()) {
             switch (reader.nextName()) {
                 case "name":
-                    pokemonSpecies.name = reader.nextString(); // Formatierung: Strg+Alt+O Strg+Alt+L
+                    pokemonSpecies.name = reader.nextString();
                     break;
-
 
                 case "flavor_text_entries":
                     reader.beginArray();
                     while (reader.hasNext()) {
                         FlavorTextEntry flavorTextEntry = readFlavorTextEntry(reader);
-                        if( flavorTextEntry.language.name.equals("en")) {   // nur englische Texte speichern
+                        if (flavorTextEntry.language.name.equals("en")) {   // nur englische Texte speichern
                             pokemonSpecies.flavorTextEntries.add(flavorTextEntry);
                         }
                     }
@@ -256,13 +207,12 @@ public class PokeAPI {
                     reader.beginArray();
                     while (reader.hasNext()) {
                         Variety variety = readVariety(reader);
-                        if(!variety.isDefault) { //falls is_default ist false:
+                        if (!variety.isDefault) { //falls is_default ist false:
                             pokemonSpecies.varieties.add(variety);
                         }
                     }
                     reader.endArray();
                     break;
-
 
                 default:
                     reader.skipValue();

@@ -111,8 +111,7 @@ public class PokemonFragment extends Fragment implements SensorEventListener {
     /**
      * @noinspection StringConcatenationInLoop
      */
-    @SuppressLint("SetTextI18n")
-    //Hard Coded Text nicht highlighten
+    @SuppressLint("SetTextI18n") //Hard Coded Text nicht highlighten
 
     void loadPokemon() {
         //Neuer Thread da Hauptthread nicht blockiert werden darf

@@ -1,5 +1,5 @@
 Projektstart: 18.10.2023
-Projektende: 25.01.2023
+Projektende: 25.01.2024
 
 Das Projekt ist im Zusammenhang mit dem Modul Mobile Apps Entwicklung entstanden.
 
